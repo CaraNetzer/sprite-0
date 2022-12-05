@@ -28,6 +28,8 @@ namespace SpriteZero
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
