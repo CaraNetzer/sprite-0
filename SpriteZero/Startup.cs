@@ -44,6 +44,15 @@ namespace SpriteZero
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                // Do not block requests while in development
+                app.UseCors(options =>
+                {
+                    options.AllowAnyOrigin();
+                    options.AllowAnyMethod();
+                    options.AllowAnyHeader();
+                });
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SpriteZero v1"));
             }
