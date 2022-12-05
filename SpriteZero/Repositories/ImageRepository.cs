@@ -7,6 +7,7 @@ using SpriteZero.Models;
 using System.Linq;
 using Microsoft.Extensions.Hosting;
 using SpriteZero.Repositories;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpriteZero
 {
@@ -14,35 +15,41 @@ namespace SpriteZero
     {
         public ImageRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<Image> GetAll()
+        public List<Models.Image> GetAll()
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT id, src, price, width, height, notes, title, sheet, upvotes, downvotes, artist, userId
-                                        FROM Image;";
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                                        FROM Image i
+                                        JOIN [User] u on i.userId = u.Id;";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Image> images = new List<Image>();
+                    List<Models.Image> images = new List<Models.Image>();
                     while (reader.Read())
                     {
-                        Image image = new Image()
+                        Models.Image image = new Models.Image()
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Src = DbUtils.GetString(reader, "src"),
-                            //Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
                             Width = DbUtils.GetInt(reader, "Width"),
                             Height = DbUtils.GetInt(reader, "Height"),
-                            //Notes = DbUtils.GetNullableString(reader, "Notes"),
+                            Notes = DbUtils.GetString(reader, "Notes"),
                             Title = DbUtils.GetString(reader, "Title"),
                             Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
-                            //Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
-                            //Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
-                            //Artist = DbUtils.GetNullableString(reader, "Artist"),
-                            UserId = DbUtils.GetInt(reader, "UserId")
+                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            Artist = DbUtils.GetString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                            User = new User()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserId"),
+                                Username = DbUtils.GetString(reader, "Username")
+                            }
                         };
 
                         images.Add(image);
@@ -55,204 +62,237 @@ namespace SpriteZero
             }
         }
 
-        //public Post GetById(int id)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"SELECT p.id as PostId, p.Title, p.Content, p.ImageLocation, p.PublishDateTime, p.CreateDateTime, p.isApproved, p.categoryId, p.userProfileId, c.name as CategoryName, u.DisplayName, t.Id as TagId, t.Name
-        //        FROM Post p
-        //        left join category c on p.categoryId = c.id
-        //        left join userProfile u on p.userProfileId = u.id
-        //        left join PostTag pt on p.Id = pt.PostId
-        //        left join Tag t on pt.TagId = t.Id
-        //        where p.id = @id";
-        //            cmd.Parameters.AddWithValue("id", id);
-        //            SqlDataReader reader = cmd.ExecuteReader();
+        public Models.Image GetById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                                        FROM Image i
+                                        JOIN [User] u on i.userId = u.Id
+                                        WHERE i.id = @id";
+                    cmd.Parameters.AddWithValue("id", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
 
-        //            Post post = null;
+                    Models.Image image = null;
 
-        //            while (reader.Read())
-        //            {
-        //                if (post == null)
-        //                {
+                    if (reader.Read())
+                    {
+                        image = new Models.Image()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Src = DbUtils.GetString(reader, "src"),
+                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Width = DbUtils.GetInt(reader, "Width"),
+                            Height = DbUtils.GetInt(reader, "Height"),
+                            Notes = DbUtils.GetString(reader, "Notes"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            Artist = DbUtils.GetString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                            User = new User()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserId"),
+                                Username = DbUtils.GetString(reader, "Username")
+                            }
+                        };
+                    }
 
-        //                    post = new Post()
-        //                    {
-        //                        Id = reader.GetInt32(reader.GetOrdinal("PostId")),
-        //                        Title = reader.GetString(reader.GetOrdinal("Title")),
-        //                        Content = reader.GetString(reader.GetOrdinal("Content")),
-        //                        ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
-        //                        PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-        //                        CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-        //                        IsApproved = reader.GetBoolean(reader.GetOrdinal("isApproved")),
-        //                        CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
-        //                        UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
-        //                        UserProfile = new UserProfile(),
-        //                        Category = new Category()
-        //                    };
-        //                    post.UserProfile.DisplayName = reader.GetString(reader.GetOrdinal("DisplayName"));
-        //                    post.Category.Name = reader.GetString(reader.GetOrdinal("CategoryName"));
-        //                }
+                    reader.Close();
 
-        //                if (DbUtils.IsNotDbNull(reader, "TagId") && !post.Tags.Any(x => x.Id == DbUtils.GetNullableInt(reader, "TagId")))
-        //                {
-        //                    post.Tags.Add(new Tag
-        //                    {
-        //                        Id = DbUtils.GetInt(reader, "TagId"),
-        //                        Name = DbUtils.GetString(reader, "Name")
-        //                    });
-        //                }
+                    return image;
+                }
+            }
+        }
 
+        public List<Models.Image> GetByUser(int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                                        FROM Image i
+                                        JOIN [User] u on i.userId = u.Id
+                                        WHERE i.UserId = @userId;";
+                    cmd.Parameters.AddWithValue("userId", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
 
-        //            }
+                    List<Models.Image> images = new List<Models.Image>();
+                    while (reader.Read())
+                    {
+                        Models.Image image = new Models.Image()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Src = DbUtils.GetString(reader, "src"),
+                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Width = DbUtils.GetInt(reader, "Width"),
+                            Height = DbUtils.GetInt(reader, "Height"),
+                            Notes = DbUtils.GetString(reader, "Notes"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            Artist = DbUtils.GetString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                            User = new User()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserId"),
+                                Username = DbUtils.GetString(reader, "Username")
+                            }
+                        };
 
-        //            reader.Close();
+                        images.Add(image);
+                    }
 
-        //            return post;
-        //        }
-        //    }
-        //}
+                    reader.Close();
 
-        //public List<Post> GetByUser(int userId)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"SELECT p.id, p.Title, p.Content, p.ImageLocation, p.PublishDateTime,
-        //                                    p.CreateDateTime, p.isApproved, p.categoryId, p.userProfileId,
+                    return images;
+                }
+            }
+        }
 
-        //                                    c.name as CategoryName, u.DisplayName
-        //                                FROM Post p
-        //                                join category c on p.categoryId = c.id
-        //                                join userProfile u on p.userProfileId = u.id
-        //                                where p.IsApproved = 1 and p.publishDateTime < @now and p.userProfileId = @id
-        //                                order by p.publishDateTime desc;";
-        //            cmd.Parameters.AddWithValue("now", DateTime.Now);
-        //            cmd.Parameters.AddWithValue("id", userId);
-        //            SqlDataReader reader = cmd.ExecuteReader();
+        public void Insert(Models.Image image)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO [Image] ([Src], [Price], [Width], [Height], [Notes], [Title], [Sheet], [Upvotes], [Downvotes], [Artist], [UserId])
+                        OUTPUT INSERTED.ID
+                        VALUES (
+                            @Src, @Price, @Width, @Height, @Notes,
+                            @Title, @Sheet, @Upvotes, @Downvotes, @Artist, @UserId )";
+                    DbUtils.AddParameter(cmd, "@Src", image.Src);
+                    DbUtils.AddParameter(cmd, "@Price", image.Price); 
+                    DbUtils.AddParameter(cmd, "@Width", image.Width);
+                    DbUtils.AddParameter(cmd, "@Height", image.Height);
+                    DbUtils.AddParameter(cmd, "@Notes", image.Notes);
+                    DbUtils.AddParameter(cmd, "@Title", image.Title);
+                    DbUtils.AddParameter(cmd, "@Sheet", image.Sheet);
+                    DbUtils.AddParameter(cmd, "@Upvotes", image.Upvotes);
+                    DbUtils.AddParameter(cmd, "@Downvotes", image.Downvotes);
+                    DbUtils.AddParameter(cmd, "@Artist", image.Artist);
+                    DbUtils.AddParameter(cmd, "@UserId", image.UserId);
 
-        //            List<Post> posts = new List<Post>();
-        //            while (reader.Read())
-        //            {
-        //                Post post = new Post()
-        //                {
-        //                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
-        //                    Title = reader.GetString(reader.GetOrdinal("Title")),
-        //                    Content = reader.GetString(reader.GetOrdinal("Content")),
-        //                    ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
-        //                    PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-        //                    CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-        //                    IsApproved = reader.GetBoolean(reader.GetOrdinal("isApproved")),
-        //                    CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
-        //                    UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
-        //                    UserProfile = new UserProfile(),
-        //                    Category = new Category()
-        //                };
-        //                post.UserProfile.DisplayName = reader.GetString(reader.GetOrdinal("DisplayName"));
-        //                post.Category.Name = reader.GetString(reader.GetOrdinal("CategoryName"));
+                    image.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
 
-        //                posts.Add(post);
-        //            }
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Image WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
 
-        //            reader.Close();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
-        //            return posts;
-        //        }
-        //    }
-        //}
+        public void Update(Models.Image image)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                {
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"UPDATE [Image]
+                                                SET Src = @Src, 
+                                                    Price = @Price, 
+                                                    Width = @Width, 
+                                                    Height = @Height, 
+                                                    Notes = @Notes,
+                                                    Title = @Title, 
+                                                    Sheet = @Sheet, 
+                                                    Upvotes = @Upvotes,
+                                                    Downvotes = @Downvotes,
+                                                    Artist = @Artist,
+                                                    UserId = @UserId
+                                                WHERE id  = @id";
+                        
+                        DbUtils.AddParameter(cmd, "@Id", image.Id);
+                        DbUtils.AddParameter(cmd, "@Src", image.Src);
+                        DbUtils.AddParameter(cmd, "@Price", image.Price);
+                        DbUtils.AddParameter(cmd, "@Width", image.Width);
+                        DbUtils.AddParameter(cmd, "@Height", image.Height);
+                        DbUtils.AddParameter(cmd, "@Notes", image.Notes);
+                        DbUtils.AddParameter(cmd, "@Title", image.Title);
+                        DbUtils.AddParameter(cmd, "@Sheet", image.Sheet);
+                        DbUtils.AddParameter(cmd, "@Upvotes", image.Upvotes);
+                        DbUtils.AddParameter(cmd, "@Downvotes", image.Downvotes);
+                        DbUtils.AddParameter(cmd, "@Artist", image.Artist);
+                        DbUtils.AddParameter(cmd, "@UserId", image.UserId);
 
-        //public void Insert(Post post)
-        //{
-        //    using (var conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (var cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"
-        //                INSERT INTO Post (
-        //                    Title, Content, ImageLocation, CreateDateTime, PublishDateTime,
-        //                    IsApproved, CategoryId, UserProfileId )
-        //                OUTPUT INSERTED.ID
-        //                VALUES (
-        //                    @Title, @Content, @ImageLocation, @CreateDateTime, @PublishDateTime,
-        //                    @IsApproved, @CategoryId, @UserProfileId )";
-        //            cmd.Parameters.AddWithValue("@Title", post.Title);
-        //            cmd.Parameters.AddWithValue("@Content", post.Content);
-        //            cmd.Parameters.AddWithValue("@ImageLocation", post.ImageLocation);
-        //            cmd.Parameters.AddWithValue("@CreateDateTime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
 
-        //            //when the user does not enter a date, the fetch call sends post.PublishDateTime as "1/1/1000..." which C# 
-        //            //doesn't recognize
-        //            //when a user doesn't enter a publication date, I'm interpretting that they want it published immediately
-        //            object published = post.PublishDateTime < DateTime.Parse("1/1/1753") ? DateTime.Now : post.PublishDateTime;
+        public List<Models.Image> Search(string criterion)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    var sql =
+                        @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                            FROM Image i
+                            JOIN [User] u on i.userId = u.Id
+                            WHERE i.Title LIKE @Criterion OR i.Notes LIKE @Criterion";                    
 
-        //            DbUtils.AddParameter(cmd, "@PublishDateTime", published);
+                    cmd.CommandText = sql;
 
-        //            cmd.Parameters.AddWithValue("@IsApproved", true);
-        //            cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
-        //            cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
+                    DbUtils.AddParameter(cmd, "@Criterion", $"%{criterion}%");
+                    
+                    var reader = cmd.ExecuteReader();
 
-        //            post.Id = (int)cmd.ExecuteScalar();
-        //        }
-        //    }
-        //}
+                    var images = new List<Models.Image>();
+                    while (reader.Read())
+                    {
+                        images.Add(new Models.Image()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Src = DbUtils.GetString(reader, "src"),
+                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Width = DbUtils.GetInt(reader, "Width"),
+                            Height = DbUtils.GetInt(reader, "Height"),
+                            Notes = DbUtils.GetString(reader, "Notes"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            Artist = DbUtils.GetString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                            User = new User()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserId"),
+                                Username = DbUtils.GetString(reader, "Username")
+                            }
+                        });
+                    }
 
-        //public void Delete(int id)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = "DELETE FROM Post WHERE id = @id";
-        //            cmd.Parameters.AddWithValue("@id", id);
+                    reader.Close();
 
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
-
-        //public void Update(Post post)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        {
-        //            using (SqlCommand cmd = conn.CreateCommand())
-        //            {
-        //                cmd.CommandText = @"UPDATE Post
-        //                                        SET Title = @title, 
-        //                                            Content = @content, 
-        //                                            ImageLocation = @imageLocation, 
-        //                                            CreateDateTime = @createDateTime, 
-        //                                            PublishDateTime = @publishDateTime,
-        //                                            IsApproved = @isApproved, 
-        //                                            CategoryId = @categoryId, 
-        //                                            UserProfileId = @userProfileId
-        //                                        WHERE id  = @id";
-
-        //                cmd.Parameters.AddWithValue("@id", post.Id);
-        //                cmd.Parameters.AddWithValue("@title", post.Title);
-        //                cmd.Parameters.AddWithValue("@content", post.Content);
-        //                cmd.Parameters.AddWithValue("@imageLocation", post.ImageLocation);
-        //                cmd.Parameters.AddWithValue("@createDateTime", DateTime.Now);
-        //                cmd.Parameters.AddWithValue("@isApproved", true);
-        //                cmd.Parameters.AddWithValue("@categoryId", post.CategoryId);
-        //                cmd.Parameters.AddWithValue("@userProfileId", post.UserProfileId);
-
-        //                object published = post.PublishDateTime < DateTime.Parse("1/1/1753") ? DateTime.Now : post.PublishDateTime;
-        //                DbUtils.AddParameter(cmd, "@PublishDateTime", published);
-
-        //                cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //}
+                    return images;
+                }
+            }
+        }
 
         //public void InsertTag(Post post, Tag tag)
         //{

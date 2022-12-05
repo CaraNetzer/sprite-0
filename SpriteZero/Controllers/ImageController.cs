@@ -23,54 +23,54 @@ namespace SpriteZero
             return Ok(_imageRepository.GetAll());
         }
 
-        //[HttpGet("{id}")]
-        //public IActionResult GetById(int id)
-        //{
-        //    var post = _imageRepository.GetById(id);
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(post);
-        //}
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var image = _imageRepository.GetById(id);
+            if (image == null)
+            {
+                return NotFound();
+            }
+            return Ok(image);
+        }
 
-        //[HttpGet("GetUserImagesById")]
-        //public IActionResult GetUserImagesById(int id)
-        //{
-        //    var posts = _imageRepository.GetByUser(id);
-        //    return Ok(posts);
-        //}
+        [HttpGet("GetByUserId")]
+        public IActionResult GetByUserId(int id)
+        {
+            var images = _imageRepository.GetByUser(id);
+            return Ok(images);
+        }
 
-        //[HttpPost]
-        //public IActionResult Post(Image image)
-        //{
-        //    _imageRepository.Insert(image);
-        //    return CreatedAtAction("Get", new { id = image.Id }, image);
-        //}
+        [HttpPost]
+        public IActionResult Post(Image image)
+        {
+            _imageRepository.Insert(image);
+            return CreatedAtAction("Get", new { id = image.Id }, image);
+        }
 
-        //[HttpPut("{id}")]
-        //public IActionResult Put(int id, Image image)
-        //{
-        //    if (id != image.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Image image)
+        {
+            if (id != image.Id)
+            {
+                return BadRequest();
+            }
 
-        //    _imageRepository.Update(image);
-        //    return NoContent();
-        //}
+            _imageRepository.Update(image);
+            return NoContent();
+        }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    _imageRepository.Delete(id);
-        //    return NoContent();
-        //}
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _imageRepository.Delete(id);
+            return NoContent();
+        }
 
-        //[HttpGet("search")]
-        //public IActionResult Search(string q, bool sortDesc)
-        //{
-        //    return Ok(_imageRepository.Search(q, sortDesc));
-        //} 
+        [HttpGet("search")]
+        public IActionResult Search(string q)
+        {
+            return Ok(_imageRepository.Search(q));
+        }
     }
 }
