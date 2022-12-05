@@ -3,7 +3,7 @@ using SpriteZero.Models;
 
 namespace SpriteZero
 {
-    internal interface IImageRepository
+    public interface IImageRepository
     {
         public List<Image> GetAll();
     }

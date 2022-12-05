@@ -6,13 +6,13 @@ using Microsoft.Extensions.Configuration;
 using SpriteZero.Models;
 using System.Linq;
 using Microsoft.Extensions.Hosting;
-using SpriteZero;
+using SpriteZero.Repositories;
 
 namespace SpriteZero
 {
-    public class PostRepository : BaseRepository, IImageRepository
+    public class ImageRepository : BaseRepository, IImageRepository
     {
-        public PostRepository(IConfiguration configuration) : base(configuration) { }
+        public ImageRepository(IConfiguration configuration) : base(configuration) { }
 
         public List<Image> GetAll()
         {
@@ -21,45 +21,36 @@ namespace SpriteZero
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT p.id, p.Title, p.Content, p.ImageLocation, p.PublishDateTime,
-                                            p.CreateDateTime, p.isApproved, p.categoryId, p.userProfileId,
+                    cmd.CommandText = @"SELECT id, src, price, width, height, notes, title, sheet, upvotes, downvotes, artist, userId
+                                        FROM Image;";
 
-                                            c.name as CategoryName, u.DisplayName
-                                        FROM Post p
-                                        join category c on p.categoryId = c.id
-                                        join userProfile u on p.userProfileId = u.id
-                                        where p.IsApproved = 1 and p.publishDateTime < @now
-                                        order by p.publishDateTime desc;";
-
-                    cmd.Parameters.AddWithValue("now", DateTime.Now);
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Post> posts = new List<Post>();
+                    List<Image> images = new List<Image>();
                     while (reader.Read())
                     {
-                        Post post = new Post()
+                        Image image = new Image()
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Title = reader.GetString(reader.GetOrdinal("Title")),
-                            Content = reader.GetString(reader.GetOrdinal("Content")),
-                            ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
-                            PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-                            IsApproved = reader.GetBoolean(reader.GetOrdinal("isApproved")),
-                            CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
-                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
-                            UserProfile = new UserProfile(),
-                            Category = new Category()
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Src = DbUtils.GetString(reader, "src"),
+                            //Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Width = DbUtils.GetInt(reader, "Width"),
+                            Height = DbUtils.GetInt(reader, "Height"),
+                            //Notes = DbUtils.GetNullableString(reader, "Notes"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                            //Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            //Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            //Artist = DbUtils.GetNullableString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "UserId")
                         };
-                        post.UserProfile.DisplayName = reader.GetString(reader.GetOrdinal("DisplayName"));
-                        post.Category.Name = reader.GetString(reader.GetOrdinal("CategoryName"));
 
-                        posts.Add(post);
+                        images.Add(image);
                     }
 
                     reader.Close();
 
-                    return posts;
+                    return images;
                 }
             }
         }

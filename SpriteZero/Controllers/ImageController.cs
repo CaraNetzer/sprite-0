@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using SpriteZero.Repositories;
+using SpriteZero;
 using SpriteZero.Models;
 using Microsoft.Extensions.Hosting;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
