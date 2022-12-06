@@ -16,3 +16,48 @@ code {
   margin:auto;
   width: 50%;
 }
+
+.image {
+  width: 100%;
+  height: 100%;
+}
+
+.image:hover {
+  opacity: 80%;
+  /* background-color: black; */
+}
+
+.board {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.board-tile {
+  overflow: hidden;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, .2);
+  margin: 2%;
+  width: 200px;
+  height: 200px;
+  flex: 0 0 200px;
+  border-radius: 10px;
+}
+
+.board-tile:hover {
+  box-shadow: 0 0 11px rgba(33,33,33,.4); 
+  border: 2px solid lightblue;
+}
+
+.board-image {
+  width: 200px;
+  height: 200px;
+}
+
+.tile.is-parent {
+  padding: 0;
+}
+
+.tile.is-ancestor {
+  margin: 2%;
+  display: flex;
+  flex-flow: row wrap;
+}

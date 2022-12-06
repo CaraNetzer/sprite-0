@@ -23,10 +23,12 @@ const PostList = () => {
 			<h1>Images</h1>
 			<div className="container">
 				<div className="row justify-content-center">
-					<div className="cards-column">
+					<div className="tile is-ancestor board">
 						{images.length > 0 ? images?.map((image) => (
 							<>
-								<SingleImage key={image.id} image={image} publicId={publicId}/>
+								<div class="tile is-parent board-tile">
+									<SingleImage key={image.id} image={image} publicId={publicId}/>
+								</div>
 							</>
 						)) : <p>No images yet</p>}
 					</div>
