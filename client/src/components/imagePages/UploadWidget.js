@@ -10,9 +10,9 @@ export const UploadWidget = ({ publicId, setPublicId }) => {
             cloudName: "dkndgz1ge",
             uploadPreset: "a4ogqwyb"
         }, function(error, result) {
-            /* if(result.event == "success") {
+            if(result.event == "success") {
                 setPublicId(result.info?.public_id)
-            } */
+            }
         })
     }, [])
 
