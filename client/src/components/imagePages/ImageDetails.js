@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardImg, CardBody } from "reactstrap";
-import { getImage } from "../../managers/ImageManager";
+import { getImage, deleteImage } from "../../managers/ImageManager";
 //import { addSubscription, getAllSubscriptions, unSubscribe } from "../../Managers/SubscriptionManager";
 //import { getAllTags } from "../tags/TagManager";
 
@@ -55,8 +55,8 @@ export const ImageDetails = () => {
         unSubscribe(subscription) */
     }
 
-    const handleDelete = () => {
-        
+    const handleDelete = (e) => {
+        deleteImage(image.id).then((e) => navigate('/'));
     }
     const handleEdit = () => {
 
@@ -89,10 +89,15 @@ export const ImageDetails = () => {
                     Tags: {post.tags.map((t) => <p>{t.name}</p>)}
                 </div>
                 <button onClick={(e) => navigate('/addTag')} style={{ marginTop: '15px', width: '120px' }}>Manage Tags</button> */}
-                <CardImg top src={image.src} alt={image.title} onError={handleBrokenImage} />
+                <CardImg className="details-img" top src={image.src} alt={image.title} onError={handleBrokenImage} />
+                <a href={image.src}
+                    target="popup"
+                    onClick={()=>window.open(`${image.src}`,'popup','width=600,height=600')}>
+                    View image as actual size
+                </a>
 
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
-                {userObject.id == image.userProfileId
+                {userObject.id == image.userId
                     ? <>
                         <button onClick={e => handleDelete(e)}>Delete</button>
                         <button onClick={e => handleEdit(e)}>Edit</button>
