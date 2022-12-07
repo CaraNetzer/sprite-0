@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Hello from "./Hello";
 import ImageBoard from "./imagePages/ImageBoard";
+import { ImageDetails } from "./imagePages/ImageDetails";
 
 
 export default function ApplicationViews( { imageList }) {
@@ -10,6 +11,7 @@ export default function ApplicationViews( { imageList }) {
       <Routes>
   
         <Route path="/" element={<ImageBoard imageList={imageList}/>} />
+        <Route path="/image/:id" element={<ImageDetails />} />
         {/* <Route path="/tag" element={<Tag />} />
         <Route path="/createTag" element={<TagForm />} />
         <Route path="/deleteTag/:id" element={<TagDelete />} />

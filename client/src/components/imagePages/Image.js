@@ -1,14 +1,17 @@
 import React from "react";
 import { Card, CardImg, CardBody } from "reactstrap";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Image } from "cloudinary-react";
 
 
 
 export const SingleImage = ({ image, publicId }) => {
+
+	const navigate = useNavigate();
+
 	return (
 		<figure className="board-image tile is-child ">		
-			<img className="image" src={image.src}></img>
+			<img onClick={() => navigate(`/image/${image.id}`)} className="image" src={image.src}></img>
 		</figure>
 	);
 };
