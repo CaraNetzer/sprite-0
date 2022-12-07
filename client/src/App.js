@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import Authorize from './components/Authorize';
 import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 

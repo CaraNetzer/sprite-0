@@ -2,10 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { SingleImage } from './Image';
 import { getAllImages } from "../../managers/ImageManager";
 import { Link } from "react-router-dom";
-import { UploadWidget } from "./UploadWidget";
 
 
-const PostList = () => {
+const ImageBoard = () => {
 	const [images, setImages] = useState([]);
 	const [publicId, setPublicId] = useState("")
 
@@ -18,16 +17,15 @@ const PostList = () => {
 	}, []);
 
 	return (
-		<>
-			<UploadWidget publicId={publicId} setPublicId={setPublicId} />
+		<>			
 			<h1>Images</h1>
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">
 						{images.length > 0 ? images?.map((image) => (
 							<>
-								<div class="tile is-parent board-tile">
-									<SingleImage key={image.id} image={image} publicId={publicId}/>
+								<div key={image.id} className="tile is-parent board-tile">
+									<SingleImage image={image} publicId={publicId}/>
 								</div>
 							</>
 						)) : <p>No images yet</p>}
@@ -38,4 +36,4 @@ const PostList = () => {
 	);
 };
 
-export default PostList;
+export default ImageBoard;
