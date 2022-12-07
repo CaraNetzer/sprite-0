@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
 
   const [ isLoggedIn, setIsLoggedIn ] = useState(true);
+  const [imageList, setImageList] = useState("");
 
   useEffect(()=>{
     if(!localStorage.getItem("userProfile")){
@@ -21,9 +22,9 @@ function App() {
 
   return (
     <Router>
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setImageList={setImageList}/>
         { isLoggedIn 
-            ? <ApplicationViews  />
+            ? <ApplicationViews  imageList={imageList} />
             : <Authorize setIsLoggedIn={setIsLoggedIn}/>
         }
     </Router>

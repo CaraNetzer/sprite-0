@@ -4,18 +4,18 @@ import { Modal } from 'react-bootstrap';
 import { UploadWidget } from './imagePages/UploadWidget';
 import Form from 'react-bootstrap/Form';
 import { Image } from "cloudinary-react";
-import { addImage } from "../managers/ImageManager";
+import { addImage, getAllImages } from "../managers/ImageManager";
 
 
 
-export function UploadModal(props) {
+export function UploadModal({ setImageList }) {
 
     const [cloudinaryUrl, setCloudinaryUrl] = useState("")
     const [thumbnailUrl, setThumbnailUrl] = useState("")
 
     const [image, updateImage] = useState({
         Src: "",
-        Price: "",
+        Price: 0,
         Width: "",
         Height: "",
         Notes: "",
@@ -26,23 +26,7 @@ export function UploadModal(props) {
         Artist: ""
     })
 
-    useEffect(() => {
-        //reset all variables
-        updateImage({
-            Src: "",
-            Price: "",
-            Width: "",
-            Height: "",
-            Notes: "",
-            Title: "",
-            Sheet: false,
-            Upvotes: 0,
-            Downvotes: 0,
-            Artist: ""
-        });
-        setCloudinaryUrl("");
-        setThumbnailUrl("");
-    }, [])
+    
 
     const localUser = localStorage.getItem("userProfile")
     const userObject = JSON.parse(localUser)
@@ -52,7 +36,7 @@ export function UploadModal(props) {
 
         const dbImage = {
             Src: cloudinaryUrl ?? "",
-            Price: image.Price ?? 0,
+            Price: image.Price ?? 0.00,
             Width: image.Width,
             Height: image.Height,
             Notes: image.Notes,
@@ -64,12 +48,31 @@ export function UploadModal(props) {
             UserId: userObject.id
         }
 
-        addImage(dbImage)        
+        addImage(dbImage).then(
+            getAllImages().then(i => setImageList(i))
+        )        
     }
 
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        //reset all variables
+        updateImage({
+            Src: "",
+            Price: 0.00,
+            Width: "",
+            Height: "",
+            Notes: "",
+            Title: "",
+            Sheet: false,
+            Upvotes: 0,
+            Downvotes: 0,
+            Artist: ""
+        });
+        setCloudinaryUrl("");
+        setThumbnailUrl("");
+        setShow(false)
+    }
     const handleShow = () => setShow(true);
 
     return (
@@ -145,7 +148,7 @@ export function UploadModal(props) {
                                 value={image.Sheet}
                                 onChange={(e) => {
                                     const copy = { ...image }
-                                    copy.Sheet = e.target.value
+                                    copy.Sheet = e.target.checked
                                     //debugger
                                     updateImage(copy)
                                 }} />

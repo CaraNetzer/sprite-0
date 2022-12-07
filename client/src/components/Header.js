@@ -4,7 +4,7 @@ import { logout } from '../managers/UserManager';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { UploadModal } from './UploadModal';
 
-export default function Header({ isLoggedIn, setIsLoggedIn }) {
+export default function Header({ isLoggedIn, setIsLoggedIn, setImageList }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const toggle = () => setIsOpen(!isOpen);	
 
@@ -34,7 +34,7 @@ export default function Header({ isLoggedIn, setIsLoggedIn }) {
 						{isLoggedIn &&
 							<>
 								<NavItem>
-									<UploadModal/>
+									<UploadModal setImageList={setImageList} />
 								</NavItem>								
 								<NavItem>
 									<a aria-current="page" className="nav-link"

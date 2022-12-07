@@ -4,7 +4,7 @@ import { getAllImages } from "../../managers/ImageManager";
 import { Link } from "react-router-dom";
 
 
-const ImageBoard = () => {
+const ImageBoard = ({ imageList }) => {
 	const [images, setImages] = useState([]);
 	const [publicId, setPublicId] = useState("")
 
@@ -14,7 +14,7 @@ const ImageBoard = () => {
 
 	useEffect(() => {
 		getAllImages().then(i => setImages(i));
-	}, []);
+	}, [imageList]);
 
 	return (
 		<>			

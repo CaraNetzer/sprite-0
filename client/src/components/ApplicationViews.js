@@ -4,12 +4,12 @@ import Hello from "./Hello";
 import ImageBoard from "./imagePages/ImageBoard";
 
 
-export default function ApplicationViews() {
+export default function ApplicationViews( { imageList }) {
 
     return (
       <Routes>
   
-        <Route path="/" element={<ImageBoard />} />
+        <Route path="/" element={<ImageBoard imageList={imageList}/>} />
         {/* <Route path="/tag" element={<Tag />} />
         <Route path="/createTag" element={<TagForm />} />
         <Route path="/deleteTag/:id" element={<TagDelete />} />
