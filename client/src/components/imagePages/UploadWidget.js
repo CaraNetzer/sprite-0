@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useRef } from "react";
 
-export const UploadWidget = ({ publicId, setPublicId }) => {
+export const UploadWidget = ({ setThumbnailUrl, setCloudinaryUrl }) => {
     const cloudinaryRef = useRef();
     const widgetRef = useRef();
     useEffect(() => {
@@ -11,7 +11,9 @@ export const UploadWidget = ({ publicId, setPublicId }) => {
             uploadPreset: "a4ogqwyb"
         }, function(error, result) {
             if(result.event == "success") {
-                setPublicId(result.info?.public_id)
+                console.log(result.info)
+                setThumbnailUrl(result.info.thumbnail_url)
+                setCloudinaryUrl(result.info.url)
             }
         })
     }, [])

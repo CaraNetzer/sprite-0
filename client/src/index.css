@@ -61,3 +61,14 @@ code {
   display: flex;
   flex-flow: row wrap;
 }
+
+.cloudinary-button {
+  width: 100%;
+  margin-bottom: 5%;
+}
+
+#img-preview {
+  /* max-width:180px; */
+  margin-left: 40%;
+  margin-bottom: 5%;
+}
