@@ -7,8 +7,9 @@ import Form from 'react-bootstrap/Form';
 import { Image } from "cloudinary-react";
 import { addImage, getAllImages } from "../managers/ImageManager";
 import { addTag, getAllTags, addImageTag } from "../managers/TagManager";
-
-
+//import { DragDropManagerImpl } from "react-dnd"
+//"react-dnd": "^14.0.2",
+        //"react-dnd-html5-backend": "^14.0.0",
 
 export function UploadModal({ setImageList }) {
 
@@ -237,6 +238,7 @@ export function UploadModal({ setImageList }) {
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Add Tags</Form.Label>
                             <ReactTags
+                                inline
                                 tags={thisTags.map(t => { return { id: `${t.id}`, name: t.name } })}
                                 suggestions={tags.map(t => { return { id: `${t.id}`, name: t.name } })}
                                 delimiters={delimiters}
@@ -246,6 +248,7 @@ export function UploadModal({ setImageList }) {
                                 handleTagClick={handleTagClick}
                                 inputFieldPosition="bottom"
                                 labelField={'name'}
+                                placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
                                 autocomplete
                             />
                             {/* <Form.Control as="textarea" rows={3}
