@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpriteZero.Models
@@ -24,6 +25,7 @@ namespace SpriteZero.Models
         [Required]
         public int UserId { get; set; }
         public User User { get; set; }
+        public List<Tag> Tags { get; set; }
 
     }
 }

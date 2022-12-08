@@ -22,37 +22,55 @@ namespace SpriteZero
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username, t.Id as TagId, t.Name as TagName
                                         FROM Image i
-                                        JOIN [User] u on i.userId = u.Id;";
+                                        JOIN [User] u on i.userId = u.Id
+                                        left join [ImageTag] pt on i.Id = pt.ImageId
+                                        left join [Tag] t on pt.TagId = t.Id;";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     List<Models.Image> images = new List<Models.Image>();
                     while (reader.Read())
                     {
-                        Models.Image image = new Models.Image()
-                        {
-                            Id = DbUtils.GetInt(reader, "Id"),
-                            Src = DbUtils.GetString(reader, "src"),
-                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
-                            Width = DbUtils.GetInt(reader, "Width"),
-                            Height = DbUtils.GetInt(reader, "Height"),
-                            Notes = DbUtils.GetString(reader, "Notes"),
-                            Title = DbUtils.GetString(reader, "Title"),
-                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
-                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
-                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
-                            Artist = DbUtils.GetString(reader, "Artist"),
-                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
-                            User = new User()
-                            {
-                                Id = DbUtils.GetInt(reader, "UserId"),
-                                Username = DbUtils.GetString(reader, "Username")
-                            }
-                        };
+                        var imageId = DbUtils.GetInt(reader, "Id");
 
-                        images.Add(image);
+                        var existingImage = images.FirstOrDefault(i => i.Id == imageId);
+                        if (existingImage == null)
+                        { 
+                            existingImage = new Models.Image()
+                            {
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Src = DbUtils.GetString(reader, "src"),
+                                Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                                Width = DbUtils.GetInt(reader, "Width"),
+                                Height = DbUtils.GetInt(reader, "Height"),
+                                Notes = DbUtils.GetString(reader, "Notes"),
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                                Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                                Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                                Artist = DbUtils.GetString(reader, "Artist"),
+                                UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                                User = new User()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserId"),
+                                    Username = DbUtils.GetString(reader, "Username")
+                                },
+                                Tags = new List<Tag>()
+                            };
+
+                            images.Add(existingImage);
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "TagId"))
+                        {
+                            existingImage.Tags.Add(new Tag()
+                            {
+                                Id = DbUtils.GetInt(reader, "TagId"),
+                                Name = DbUtils.GetString(reader, "TagName")
+                            });
+                        }
                     }
 
                     reader.Close();
@@ -69,37 +87,52 @@ namespace SpriteZero
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username, t.Id as TagId, t.Name as TagName
                                         FROM Image i
                                         JOIN [User] u on i.userId = u.Id
+                                        left join [ImageTag] pt on i.Id = pt.ImageId
+                                        left join [Tag] t on pt.TagId = t.Id
                                         WHERE i.id = @id";
                     cmd.Parameters.AddWithValue("id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     Models.Image image = null;
 
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        image = new Models.Image()
+                        if (image == null)
                         {
-                            Id = DbUtils.GetInt(reader, "Id"),
-                            Src = DbUtils.GetString(reader, "src"),
-                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
-                            Width = DbUtils.GetInt(reader, "Width"),
-                            Height = DbUtils.GetInt(reader, "Height"),
-                            Notes = DbUtils.GetString(reader, "Notes"),
-                            Title = DbUtils.GetString(reader, "Title"),
-                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
-                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
-                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
-                            Artist = DbUtils.GetString(reader, "Artist"),
-                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
-                            User = new User()
+                            image = new Models.Image()
                             {
-                                Id = DbUtils.GetInt(reader, "UserId"),
-                                Username = DbUtils.GetString(reader, "Username")
-                            }
-                        };
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Src = DbUtils.GetString(reader, "src"),
+                                Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                                Width = DbUtils.GetInt(reader, "Width"),
+                                Height = DbUtils.GetInt(reader, "Height"),
+                                Notes = DbUtils.GetString(reader, "Notes"),
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                                Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                                Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                                Artist = DbUtils.GetString(reader, "Artist"),
+                                UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                                User = new User()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserId"),
+                                    Username = DbUtils.GetString(reader, "Username")
+                                },
+                                Tags = new List<Tag>()
+                            };
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "TagId"))
+                        {
+                            image.Tags.Add(new Tag()
+                            {
+                                Id = DbUtils.GetInt(reader, "TagId"),
+                                Name = DbUtils.GetString(reader, "TagName")
+                            });
+                        }
                     }
 
                     reader.Close();
@@ -116,9 +149,11 @@ namespace SpriteZero
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                    cmd.CommandText = @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username, t.Id as TagId, t.Name as TagName
                                         FROM Image i
                                         JOIN [User] u on i.userId = u.Id
+                                        left join [ImageTag] pt on i.Id = pt.ImageId
+                                        left join [Tag] t on pt.TagId = t.Id
                                         WHERE i.UserId = @userId;";
                     cmd.Parameters.AddWithValue("userId", userId);
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -126,28 +161,44 @@ namespace SpriteZero
                     List<Models.Image> images = new List<Models.Image>();
                     while (reader.Read())
                     {
-                        Models.Image image = new Models.Image()
-                        {
-                            Id = DbUtils.GetInt(reader, "Id"),
-                            Src = DbUtils.GetString(reader, "src"),
-                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
-                            Width = DbUtils.GetInt(reader, "Width"),
-                            Height = DbUtils.GetInt(reader, "Height"),
-                            Notes = DbUtils.GetString(reader, "Notes"),
-                            Title = DbUtils.GetString(reader, "Title"),
-                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
-                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
-                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
-                            Artist = DbUtils.GetString(reader, "Artist"),
-                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
-                            User = new User()
-                            {
-                                Id = DbUtils.GetInt(reader, "UserId"),
-                                Username = DbUtils.GetString(reader, "Username")
-                            }
-                        };
+                        var imageId = DbUtils.GetInt(reader, "Id");
 
-                        images.Add(image);
+                        var existingImage = images.FirstOrDefault(i => i.Id == imageId);
+                        if (existingImage == null)
+                        {
+                            existingImage = new Models.Image()
+                            {
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Src = DbUtils.GetString(reader, "src"),
+                                Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                                Width = DbUtils.GetInt(reader, "Width"),
+                                Height = DbUtils.GetInt(reader, "Height"),
+                                Notes = DbUtils.GetString(reader, "Notes"),
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                                Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                                Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                                Artist = DbUtils.GetString(reader, "Artist"),
+                                UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                                User = new User()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserId"),
+                                    Username = DbUtils.GetString(reader, "Username")
+                                },
+                                Tags = new List<Tag>()
+                            };
+
+                            images.Add(existingImage);
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "TagId"))
+                        {
+                            existingImage.Tags.Add(new Tag()
+                            {
+                                Id = DbUtils.GetInt(reader, "TagId"),
+                                Name = DbUtils.GetString(reader, "TagName")
+                            });
+                        }
                     }
 
                     reader.Close();
