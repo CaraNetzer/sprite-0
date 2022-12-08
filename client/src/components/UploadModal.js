@@ -39,8 +39,8 @@ export function UploadModal({ setImageList }) {
     const localUser = localStorage.getItem("userProfile")
     const userObject = JSON.parse(localUser)
 
-    const uploadImage = (i, e) => {
-        //e.preventDefault()
+    const uploadImage = (e) => {
+        e.preventDefault()
 
         const dbImage = {
             Src: cloudinaryUrl ?? "",
@@ -57,17 +57,26 @@ export function UploadModal({ setImageList }) {
         }
 
         //change tag ids back to ints
-        const cleanedThisTags = thisTags.map(t => {return {id: parseInt(t.id), name: t.name}})
+        const cleanedThisTags = thisTags.map(t => { return { id: parseInt(t.id), name: t.name } })
         dbImage.Tags = cleanedThisTags
 
-        addImage(dbImage).then(i => setImageId(i.id))
-            .then(getAllImages().then(i => setImageList(i))
-        )
 
-        thisTags.forEach(thisTag => addImageTag({
-            tagId: tags.find(t => t.name == thisTag.name).id,
-            imageId: newImageId,
-        }));
+        fetch('/api/Image', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dbImage)
+        }).then((res) => res.json())
+            .then(response => {
+                cleanedThisTags.forEach(thisTag => addImageTag({
+                    tagId: tags.find(t => t.name == thisTag.name).id,
+                    imageId: response.id,
+                }));
+            })
+            .then(getAllImages().then(i => setImageList(i)))
+
+
     }
 
     const [show, setShow] = useState(false);
@@ -98,7 +107,7 @@ export function UploadModal({ setImageList }) {
 
     const handleAddition = tag => {
         //don't add tag if it's already in the list
-        if(tags.find(t => t.name == tag.name) == undefined){
+        if (tags.find(t => t.name == tag.name) == undefined) {
             const newTag = {
                 name: tag.name
             };
@@ -109,9 +118,9 @@ export function UploadModal({ setImageList }) {
             getAllTags().then(t => setAllTags(t))
         }
 
-        if (thisTags.find(t => t.name == tag.name) == undefined) {            
+        if (thisTags.find(t => t.name == tag.name) == undefined) {
             setThisTags([...thisTags, tag]);
-        }        
+        }
     };
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -130,7 +139,7 @@ export function UploadModal({ setImageList }) {
 
     const KeyCodes = {
         comma: 188,
-        enter: 13, 
+        enter: 13,
         tab: 9
     };
 
@@ -228,8 +237,8 @@ export function UploadModal({ setImageList }) {
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Add Tags</Form.Label>
                             <ReactTags
-                                tags={thisTags.map(t => {return {id: `${t.id}`, name: t.name}})}
-                                suggestions={tags.map(t => {return {id: `${t.id}`, name: t.name}})}
+                                tags={thisTags.map(t => { return { id: `${t.id}`, name: t.name } })}
+                                suggestions={tags.map(t => { return { id: `${t.id}`, name: t.name } })}
                                 delimiters={delimiters}
                                 handleDelete={handleDelete}
                                 handleAddition={handleAddition}
