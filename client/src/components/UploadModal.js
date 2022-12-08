@@ -17,7 +17,6 @@ export function UploadModal({ setImageList }) {
     const [thumbnailUrl, setThumbnailUrl] = useState("")
     const [tags, setAllTags] = useState([])
     const [thisTags, setThisTags] = useState([])
-    const [newImageId, setImageId] = useState("")
 
     const [image, updateImage] = useState({
         Src: "",
@@ -99,6 +98,7 @@ export function UploadModal({ setImageList }) {
         setCloudinaryUrl("");
         setThumbnailUrl("");
         setShow(false)
+        setThisTags([])
     }
     const handleShow = () => setShow(true);
 
@@ -125,7 +125,7 @@ export function UploadModal({ setImageList }) {
     };
 
     const handleDrag = (tag, currPos, newPos) => {
-        const newTags = tags.slice();
+        const newTags = thisTags.slice();
 
         newTags.splice(currPos, 1);
         newTags.splice(newPos, 0, tag);
@@ -251,13 +251,6 @@ export function UploadModal({ setImageList }) {
                                 placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
                                 autocomplete
                             />
-                            {/* <Form.Control as="textarea" rows={3}
-                                /* value={image.Tags} 
-                                onChange={(e) => {
-                                    const copy = { ...image }
-                                    copy.Tags = tags
-                                    updateImage(copy)
-                                }} /> */}
                         </Form.Group>
                     </Form>
                 </Modal.Body>
