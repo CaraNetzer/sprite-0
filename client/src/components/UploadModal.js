@@ -2,9 +2,11 @@ import { React, useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import { Modal } from 'react-bootstrap';
 import { UploadWidget } from './imagePages/UploadWidget';
+import { WithContext as ReactTags } from 'react-tag-input';
 import Form from 'react-bootstrap/Form';
 import { Image } from "cloudinary-react";
 import { addImage, getAllImages } from "../managers/ImageManager";
+import { addTag, getAllTags, addImageTag } from "../managers/TagManager";
 
 
 
@@ -12,6 +14,9 @@ export function UploadModal({ setImageList }) {
 
     const [cloudinaryUrl, setCloudinaryUrl] = useState("")
     const [thumbnailUrl, setThumbnailUrl] = useState("")
+    const [tags, setAllTags] = useState([])
+    const [thisTags, setThisTags] = useState([])
+    const [newImageId, setImageId] = useState("")
 
     const [image, updateImage] = useState({
         Src: "",
@@ -26,7 +31,10 @@ export function UploadModal({ setImageList }) {
         Artist: ""
     })
 
-    
+    useEffect(() => {
+        getAllTags().then(t => setAllTags(t))
+    }, [])
+
 
     const localUser = localStorage.getItem("userProfile")
     const userObject = JSON.parse(localUser)
@@ -48,9 +56,18 @@ export function UploadModal({ setImageList }) {
             UserId: userObject.id
         }
 
-        addImage(dbImage).then(
-            getAllImages().then(i => setImageList(i))
-        )        
+        //change tag ids back to ints
+        const cleanedThisTags = thisTags.map(t => {return {id: parseInt(t.id), name: t.name}})
+        dbImage.Tags = cleanedThisTags
+
+        addImage(dbImage).then(i => setImageId(i.id))
+            .then(getAllImages().then(i => setImageList(i))
+        )
+
+        thisTags.forEach(thisTag => addImageTag({
+            tagId: tags.find(t => t.name == thisTag.name).id,
+            imageId: newImageId,
+        }));
     }
 
     const [show, setShow] = useState(false);
@@ -75,6 +92,51 @@ export function UploadModal({ setImageList }) {
     }
     const handleShow = () => setShow(true);
 
+    const handleDelete = i => {
+        setThisTags(thisTags.filter((tag, index) => index !== i));
+    };
+
+    const handleAddition = tag => {
+        //don't add tag if it's already in the list
+        if(tags.find(t => t.name == tag.name) == undefined){
+            const newTag = {
+                name: tag.name
+            };
+            addTag(newTag) //need to find a way to store the id that comes back from this
+                .then(t => {
+                    setThisTags([...thisTags, t]);
+                })
+            getAllTags().then(t => setAllTags(t))
+        }
+
+        if (thisTags.find(t => t.name == tag.name) == undefined) {            
+            setThisTags([...thisTags, tag]);
+        }        
+    };
+
+    const handleDrag = (tag, currPos, newPos) => {
+        const newTags = tags.slice();
+
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+
+        // re-render
+        setThisTags(newTags);
+    };
+
+    const handleTagClick = index => {
+        console.log('The tag at index ' + index + ' was clicked');
+    };
+
+    const KeyCodes = {
+        comma: 188,
+        enter: 13, 
+        tab: 9
+    };
+
+    const delimiters = [KeyCodes.comma, KeyCodes.enter];
+
+
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
@@ -86,7 +148,7 @@ export function UploadModal({ setImageList }) {
                 </Modal.Header>
                 <Modal.Body>
                     {thumbnailUrl ? <Image id="img-preview" cloudName="dkndgz1ge" publicId={thumbnailUrl} /> : ""}
-                    <UploadWidget setCloudinaryUrl={setCloudinaryUrl} setThumbnailUrl={setThumbnailUrl}/>
+                    <UploadWidget setCloudinaryUrl={setCloudinaryUrl} setThumbnailUrl={setThumbnailUrl} />
                     <Form>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Label>Title</Form.Label>
@@ -155,13 +217,35 @@ export function UploadModal({ setImageList }) {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Notes</Form.Label>
-                            <Form.Control as="textarea" rows={3} 
+                            <Form.Control as="textarea" rows={3}
                                 value={image.Notes}
                                 onChange={(e) => {
                                     const copy = { ...image }
                                     copy.Notes = e.target.value
                                     updateImage(copy)
-                                }}/>
+                                }} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                            <Form.Label>Add Tags</Form.Label>
+                            <ReactTags
+                                tags={thisTags.map(t => {return {id: `${t.id}`, name: t.name}})}
+                                suggestions={tags.map(t => {return {id: `${t.id}`, name: t.name}})}
+                                delimiters={delimiters}
+                                handleDelete={handleDelete}
+                                handleAddition={handleAddition}
+                                handleDrag={handleDrag}
+                                handleTagClick={handleTagClick}
+                                inputFieldPosition="bottom"
+                                labelField={'name'}
+                                autocomplete
+                            />
+                            {/* <Form.Control as="textarea" rows={3}
+                                /* value={image.Tags} 
+                                onChange={(e) => {
+                                    const copy = { ...image }
+                                    copy.Tags = tags
+                                    updateImage(copy)
+                                }} /> */}
                         </Form.Group>
                     </Form>
                 </Modal.Body>

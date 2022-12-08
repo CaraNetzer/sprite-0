@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SpriteZero.Models;
+using System.Collections.Generic;
 
 namespace SpriteZero
 {
@@ -9,5 +10,6 @@ namespace SpriteZero
         public void Add(Tag tag);
         public void Delete(int id);
         public void Update(Tag tag);
+        public void InsertTag(ImageTag it);
     }
 }

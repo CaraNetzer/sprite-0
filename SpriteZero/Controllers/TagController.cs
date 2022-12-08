@@ -55,6 +55,13 @@ namespace SpriteZero
             return CreatedAtAction("Get", new { id = tag.Id }, tag);
         }
 
+        [HttpPost("AddImageTag")]
+        public IActionResult AddImageTag(ImageTag it)
+        {
+            _tagRepo.InsertTag(it);
+            return Ok();
+        }
+
         // PUT api/<TagController>/5
         [HttpPut("{id}")]
         public IActionResult Update(int id, Tag tag)

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardImg, CardBody } from "reactstrap";
 import { getImage, deleteImage } from "../../managers/ImageManager";
 //import { addSubscription, getAllSubscriptions, unSubscribe } from "../../Managers/SubscriptionManager";
-//import { getAllTags } from "../tags/TagManager";
+import { getAllTags } from "../../managers/TagManager";
 
 
 
@@ -11,6 +11,9 @@ export const ImageDetails = () => {
     const [image, updateImage] = useState("");
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const [allTags, setAllTags] = useState("")
+    const [thisTags, setThisTags] = useState("")
 
     //all post image links are broken, so need to replace them all with a default image
     const handleBrokenImage = (image) => {

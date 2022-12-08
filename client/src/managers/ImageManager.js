@@ -24,7 +24,7 @@ export const addImage = (image) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(image)
-  });
+  }).then((res) => res.json());;
 };
 
 export const deleteImage = (id) => {

@@ -136,5 +136,21 @@ namespace SpriteZero
             }
         }
 
+        public void InsertTag(ImageTag it)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO ImageTag (ImageId, TagId)
+                                                       VALUES (@imageId, @tagId)";
+                    cmd.Parameters.AddWithValue("@imageId", it.ImageId);
+                    cmd.Parameters.AddWithValue("@tagId", it.TagId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }
