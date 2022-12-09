@@ -8,8 +8,8 @@ export const getAllImages = () => {
 };
 
 export const getImage = (id) => {
-    return fetch(`/api/Image/${id}`)
-      .then((res) => res.json());
+  return fetch(`/api/Image/${id}`)
+    .then((res) => res.json());
 };
 
 export const getUserImagesById = (userId) => {
@@ -29,16 +29,21 @@ export const addImage = (image) => {
 
 export const deleteImage = (id) => {
   return fetch(`/api/image/${id}`, {
-      method: "DELETE"
-    })
+    method: "DELETE"
+  })
 };
 
 export const editImage = (image) => {
   return fetch(`/api/image/${image.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(image),
-    });
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(image),
+  });
 };
+
+export const searchDbImages = (query) => {
+  return fetch(`https://localhost:5001/api/Image/search?q=${query}`)
+    .then((res) => res.json());
+}

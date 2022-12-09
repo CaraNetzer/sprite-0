@@ -5,7 +5,7 @@ import { Image } from "cloudinary-react";
 
 
 
-export const SingleImage = ({ image, publicId }) => {
+export const SingleImage = ({ image }) => {
 
 	const navigate = useNavigate();
 
