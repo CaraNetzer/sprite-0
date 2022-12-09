@@ -75,6 +75,40 @@ namespace SpriteZero
                 }
             }
         }
+
+        public List<Tag> GetImageTags(int imageId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT it.Id as ImageTagId, it.ImageId, it.TagId, t.[Name]
+                        FROM ImageTag it
+                        LEFT JOIN Tag t on it.TagId = t.Id 
+                        WHERE it.ImageId = @id                       
+                    ";
+
+                    cmd.Parameters.AddWithValue("@id", imageId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Tag> tags = new List<Tag>();
+                    while (reader.Read())
+                    {
+                        tags.Add(new Tag
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("TagId")),
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        });
+
+                    }
+                    reader.Close();
+                    return tags;
+                }
+            }
+        }
         public void Add(Tag tag)
         {
             using (var conn = Connection)

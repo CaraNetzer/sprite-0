@@ -62,6 +62,12 @@ namespace SpriteZero
             return Ok();
         }
 
+        [HttpGet("GetImageTags")]
+        public IActionResult GetImageTags(int imageId)
+        {            
+            return Ok(_tagRepo.GetImageTags(imageId));
+        }
+
         // PUT api/<TagController>/5
         [HttpPut("{id}")]
         public IActionResult Update(int id, Tag tag)
