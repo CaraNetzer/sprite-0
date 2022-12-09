@@ -62,6 +62,13 @@ namespace SpriteZero
             return Ok();
         }
 
+        [HttpDelete("RemoveImageTag")]
+        public IActionResult RemoveImageTag(ImageTag it)
+        {
+            _tagRepo.RemoveTag(it);
+            return Ok();
+        }
+
         [HttpGet("GetImageTags")]
         public IActionResult GetImageTags(int imageId)
         {            

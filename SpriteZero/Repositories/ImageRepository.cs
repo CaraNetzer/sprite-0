@@ -302,10 +302,12 @@ namespace SpriteZero
                 using (var cmd = conn.CreateCommand())
                 {
                     var sql =
-                        @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username
+                        @"SELECT i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId, u.id as UserId, u.username, t.Id as TagId, t.Name as TagName
                             FROM Image i
                             JOIN [User] u on i.userId = u.Id
-                            WHERE i.Title LIKE @Criterion OR i.Notes LIKE @Criterion";                    
+                            left join [ImageTag] pt on i.Id = pt.ImageId
+                            left join [Tag] t on pt.TagId = t.Id
+                            WHERE i.Title LIKE @Criterion OR i.Notes LIKE @Criterion OR t.Name LIKE @Criterion";                    
 
                     cmd.CommandText = sql;
 
@@ -316,26 +318,44 @@ namespace SpriteZero
                     var images = new List<Models.Image>();
                     while (reader.Read())
                     {
-                        images.Add(new Models.Image()
+                        var imageId = DbUtils.GetInt(reader, "Id");
+
+                        var existingImage = images.FirstOrDefault(i => i.Id == imageId);
+                        if (existingImage == null)
                         {
-                            Id = DbUtils.GetInt(reader, "Id"),
-                            Src = DbUtils.GetString(reader, "src"),
-                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
-                            Width = DbUtils.GetInt(reader, "Width"),
-                            Height = DbUtils.GetInt(reader, "Height"),
-                            Notes = DbUtils.GetString(reader, "Notes"),
-                            Title = DbUtils.GetString(reader, "Title"),
-                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
-                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
-                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
-                            Artist = DbUtils.GetString(reader, "Artist"),
-                            UserId = DbUtils.GetInt(reader, "ImageUserId"),
-                            User = new User()
+                            existingImage = new Models.Image()
                             {
-                                Id = DbUtils.GetInt(reader, "UserId"),
-                                Username = DbUtils.GetString(reader, "Username")
-                            }
-                        });
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Src = DbUtils.GetString(reader, "src"),
+                                Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                                Width = DbUtils.GetInt(reader, "Width"),
+                                Height = DbUtils.GetInt(reader, "Height"),
+                                Notes = DbUtils.GetString(reader, "Notes"),
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                                Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                                Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                                Artist = DbUtils.GetString(reader, "Artist"),
+                                UserId = DbUtils.GetInt(reader, "ImageUserId"),
+                                User = new User()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserId"),
+                                    Username = DbUtils.GetString(reader, "Username")
+                                },
+                                Tags = new List<Tag>()
+                            };
+
+                            images.Add(existingImage);
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "TagId"))
+                        {
+                            existingImage.Tags.Add(new Tag()
+                            {
+                                Id = DbUtils.GetInt(reader, "TagId"),
+                                Name = DbUtils.GetString(reader, "TagName")
+                            });
+                        }
                     }
 
                     reader.Close();
@@ -343,26 +363,6 @@ namespace SpriteZero
                     return images;
                 }
             }
-        }
-
-        
-
-        //public void DeleteTag(int postId, int tagId)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"DELETE FROM PostTag 
-        //                                 WHERE PostId = @postId AND 
-        //                                       TagId = @tagId";
-        //            cmd.Parameters.AddWithValue("@postId", postId);
-        //            cmd.Parameters.AddWithValue("@tagId", tagId);
-
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
+        }        
     }
 }

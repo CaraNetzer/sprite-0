@@ -186,5 +186,23 @@ namespace SpriteZero
             }
         }
 
+        public void RemoveTag(ImageTag it)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM ImageTag 
+                                         WHERE ImageId = @imageId AND 
+                                               TagId = @tagId";
+                    cmd.Parameters.AddWithValue("@imageId", it.ImageId);
+                    cmd.Parameters.AddWithValue("@tagId", it.TagId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

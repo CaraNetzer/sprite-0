@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { getImage, editImage } from "../../managers/ImageManager";
 import { WithContext as ReactTags } from 'react-tag-input';
 import Form from 'react-bootstrap/Form';
-import { addTag, getAllTags, getImageTags, addImageTag } from "../../managers/TagManager";
+import { addTag, getAllTags, getImageTags, addImageTag, removeImageTag } from "../../managers/TagManager";
 import { Image } from "cloudinary-react";
 
 
@@ -86,7 +86,9 @@ const ImageEdit = () => {
 
     //#region tag methods
     const handleDelete = i => {
+        const tagToRemove = thisTags.find((tag, index) => index == i);
         setThisTags(thisTags.filter((tag, index) => index !== i));
+        removeImageTag({imageId: id, tagId: parseInt(tagToRemove.id)});
     };
 
     const handleAddition = tag => {

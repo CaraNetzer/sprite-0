@@ -11,8 +11,9 @@ export const ImageDetails = () => {
     const navigate = useNavigate();
 
     const [thisTags, setThisTags] = useState([])
+    const [downloadString, setDownloadString] = useState("")
 
-    const downloadString = image.src?.slice(0, 49) + "/f_png/fl_attachment" + image.src?.slice(49) ?? "";
+    
 
     //all post image links are broken, so need to replace them all with a default image
     const handleBrokenImage = (image) => {
@@ -30,6 +31,18 @@ export const ImageDetails = () => {
 
         getImageTags(id).then(setThisTags);
     }, []);
+
+
+
+    useEffect(() => {
+        let newDownloadString = ""
+        if(image.src?.startsWith('https')) {
+            newDownloadString = image.src?.slice(0, 49) + "/f_png/fl_attachment" + image.src?.slice(49) ?? "";
+        } else {
+            newDownloadString = image.src?.slice(0, 49) + "f_png/fl_attachment/" + image.src?.slice(49) ?? "";
+        }
+        setDownloadString(newDownloadString);
+    }, [image])
 
 
     const Favorite = (e) => {
@@ -89,10 +102,7 @@ export const ImageDetails = () => {
                         : ""
                     } */}
                 </p>
-                {/* <div>
-                    Tags: {post.tags.map((t) => <p>{t.name}</p>)}
-                </div>
-                <button onClick={(e) => navigate('/addTag')} style={{ marginTop: '15px', width: '120px' }}>Manage Tags</button> */}
+                <p>Uploaded by: <a href={`/profile/${image.user.id}`}>{image.user.username}</a></p>
                 <CardImg className="details-img" top src={image.src} alt={image.title} onError={handleBrokenImage} />
                 <p>
                     <a href={image.src}
@@ -102,7 +112,7 @@ export const ImageDetails = () => {
                     </a>
                 </p>
                 {downloadString ? <a href={downloadString}>Download</a> : ""}
-                {thisTags?.map(t => <p><a href="">{t.name}</a></p>)}
+                {image.tags?.map(t => <p><a href="">{t.name}</a></p>)}
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
                 {userObject.id == image.userId
                     ? <>

@@ -5,6 +5,8 @@ import ImageBoard from "./imagePages/ImageBoard";
 import { ImageDetails } from "./imagePages/ImageDetails";
 import ImageEdit from "./imagePages/ImageEdit";
 import { Search } from './Search';
+import { MyProfile } from "./userProfilePages/MyProfile";
+import { UserProfile } from "./userProfilePages/UserProfile";
 
 
 export default function ApplicationViews( { imageList }) {
@@ -16,12 +18,8 @@ export default function ApplicationViews( { imageList }) {
         <Route path="/image/:id" element={<ImageDetails />} />
         <Route path="/imageEdit/:id" element={<ImageEdit />} />        
         <Route path="/search" element={<Search />} />        
-        {/* <Route path="/tag" element={<Tag />} />
-        <Route path="/createTag" element={<TagForm />} />
-        <Route path="/deleteTag/:id" element={<TagDelete />} />
-        <Route path="/my-posts/:id/comments" element={<PostComments isMy={true} />} />
-        <Route path="/posts/:id/comments" element={<PostComments isMy={false} />} />
-        <Route path="/addtag" element={<PostTag />} /> */}
+        <Route path="/myProfile" element={<MyProfile />} />      
+        <Route path="/profile/:id" element={<UserProfile />} />      
         <Route path="*" element={<p>Whoops, nothing here...</p>} />
   
       </Routes>

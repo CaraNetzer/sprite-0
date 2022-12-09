@@ -12,5 +12,6 @@ namespace SpriteZero
         public void Update(Tag tag);
         public void InsertTag(ImageTag it);
         public List<Tag> GetImageTags(int imageId);
+        public void RemoveTag(ImageTag it);
     }
 }
