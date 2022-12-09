@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { getImage, editImage } from "../../managers/ImageManager";
 import { WithContext as ReactTags } from 'react-tag-input';
 import Form from 'react-bootstrap/Form';
-import { addTag, getAllTags, getImageTags } from "../../managers/TagManager";
+import { addTag, getAllTags, getImageTags, addImageTag } from "../../managers/TagManager";
 import { Image } from "cloudinary-react";
 
 
@@ -13,7 +13,7 @@ import { Image } from "cloudinary-react";
 const ImageEdit = () => {
     const localUser = localStorage.getItem("userProfile")
     const userObject = JSON.parse(localUser)
-    
+
     const [image, setImage] = useState({
         Src: "",
         Price: 0.00,
@@ -29,7 +29,7 @@ const ImageEdit = () => {
     });
 
     const navigate = useNavigate();
-    const { id } = useParams();    
+    const { id } = useParams();
 
     const [tags, setAllTags] = useState([])
     const [thisTags, setThisTags] = useState([])
@@ -39,7 +39,8 @@ const ImageEdit = () => {
         getAllTags().then(setAllTags);
         getImageTags(id).then(setThisTags);
     }, [])
-
+    
+    const startingTags = [...thisTags];
 
     //one step behind issue -- needed e.preventDefault();
     const Edit = (e) => {
@@ -61,9 +62,22 @@ const ImageEdit = () => {
             userId: userObject.id
         }
 
+        //change tag ids back to ints
+        const cleanedThisTags = thisTags.map(t => { return { id: parseInt(t.id), name: t.name } })
+        editedImage.Tags = cleanedThisTags
+
         editImage(editedImage).then(() => {
             navigate(`/image/${id}`)
-        });
+        }).then(response => {
+            cleanedThisTags.forEach(thisTag => {
+                if (startingTags.find(t => t.id === thisTag.id && t.name === thisTag.name) == undefined) {
+                    addImageTag({
+                        tagId: thisTag.id,
+                        imageId: parseInt(id),
+                    })
+                }
+            })
+        })
     }
 
     const Cancel = () => {
@@ -114,7 +128,7 @@ const ImageEdit = () => {
 
     return (
         <Form>
-            <Image id="img-preview" cloudName="dkndgz1ge" publicId={image.Src} /> 
+            <Image id="img-preview" cloudName="dkndgz1ge" publicId={image.Src} />
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <Form.Label>Title</Form.Label>
                 <Form.Control

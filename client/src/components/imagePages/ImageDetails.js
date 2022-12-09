@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardImg, CardBody } from "reactstrap";
 import { getImage, deleteImage } from "../../managers/ImageManager";
-//import { addSubscription, getAllSubscriptions, unSubscribe } from "../../Managers/SubscriptionManager";
-import { WithContext as ReactTags } from 'react-tag-input';
-import { addTag, getAllTags, getImageTags, addImageTag } from "../../managers/TagManager";
+import { getImageTags } from "../../managers/TagManager";
 
 
 export const ImageDetails = () => {
@@ -12,8 +10,7 @@ export const ImageDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [tags, setAllTags] = useState("")
-    const [thisTags, setThisTags] = useState("")
+    const [thisTags, setThisTags] = useState([])
 
     const downloadString = image.src?.slice(0, 49) + "/f_png/fl_attachment" + image.src?.slice(49) ?? "";
 
@@ -31,7 +28,6 @@ export const ImageDetails = () => {
         getImage(id)
             .then(i => updateImage(i));
 
-        getAllTags().then(setAllTags);
         getImageTags(id).then(setThisTags);
     }, []);
 
@@ -68,51 +64,7 @@ export const ImageDetails = () => {
         navigate(`/imageEdit/${id}`);
     }
 
-    //#region tag methods
-    const handleDelete = i => {
-        setThisTags(thisTags.filter((tag, index) => index !== i));
-    };
-
-    const handleAddition = tag => {
-        //don't add tag if it's already in the list
-        if (tags.find(t => t.name == tag.name) == undefined) {
-            const newTag = {
-                name: tag.name
-            };
-            addTag(newTag)
-                .then(t => {
-                    setThisTags([...thisTags, t]);
-                })
-            getAllTags().then(t => setAllTags(t))
-        }
-
-        if (thisTags?.find(t => t.name == tag.name) == undefined) {
-            setThisTags([...thisTags, tag]);            
-            const newtags = thisTags
-            addImageTag({imageId: id, tagId: parseInt(newtags?.find(t => t.name == tag.name)?.id)})
-                .then(getImage(id).then(i => updateImage(i)));
-        }   
-
-    };
-
-    const handleDrag = (tag, currPos, newPos) => {
-        const newTags = thisTags.slice();
-
-        newTags.splice(currPos, 1);
-        newTags.splice(newPos, 0, tag);
-
-        // re-render
-        setThisTags(newTags);
-    };
-
-    const KeyCodes = {
-        comma: 188,
-        enter: 13,
-        tab: 9
-    };
-
-    const delimiters = [KeyCodes.comma, KeyCodes.enter];
-    //#endregion
+    
 
     if (!image) {
         return null;
@@ -150,19 +102,7 @@ export const ImageDetails = () => {
                     </a>
                 </p>
                 {downloadString ? <a href={downloadString}>Download</a> : ""}
-                <ReactTags
-                    inline
-                    tags={thisTags?.map(t => { return { id: `${t.id}`, name: t.name } })}
-                    suggestions={tags?.map(t => { return { id: `${t.id}`, name: t.name } })}
-                    delimiters={delimiters}
-                    handleDelete={handleDelete}
-                    handleAddition={handleAddition}
-                    handleDrag={handleDrag}
-                    inputFieldPosition="bottom"
-                    labelField={'name'}
-                    placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
-                    autocomplete
-                />
+                {thisTags?.map(t => <p><a href="">{t.name}</a></p>)}
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
                 {userObject.id == image.userId
                     ? <>
