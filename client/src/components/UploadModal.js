@@ -7,16 +7,14 @@ import Form from 'react-bootstrap/Form';
 import { Image } from "cloudinary-react";
 import { addImage, getAllImages } from "../managers/ImageManager";
 import { addTag, getAllTags, addImageTag } from "../managers/TagManager";
-//import { DragDropManagerImpl } from "react-dnd"
-//"react-dnd": "^14.0.2",
-        //"react-dnd-html5-backend": "^14.0.0",
+
 
 export function UploadModal({ setImageList }) {
 
     const [cloudinaryUrl, setCloudinaryUrl] = useState("")
     const [thumbnailUrl, setThumbnailUrl] = useState("")
     const [tags, setAllTags] = useState([])
-    const [thisTags, setThisTags] = useState([])
+    const [thisTags, setThisTags] = useState([])    
 
     const [image, updateImage] = useState({
         Src: "",

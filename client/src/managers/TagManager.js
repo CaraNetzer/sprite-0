@@ -31,6 +31,11 @@ export const addImageTag = (imageTag) => {
       }).then((res) => res.json());
 };
 
+export const getImageTags = (imageId) => {
+    return fetch(`https://localhost:5001/api/tag/GetImageTags?imageId=${imageId}`)
+      .then((res) => res.json());
+};
+
 export const deleteTag = (id) => {
     return fetch(`https://localhost:5001/api/tag/${id}`, {
       method: "DELETE"

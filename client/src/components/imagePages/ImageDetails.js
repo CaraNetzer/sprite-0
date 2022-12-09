@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardImg, CardBody } from "reactstrap";
 import { getImage, deleteImage } from "../../managers/ImageManager";
 //import { addSubscription, getAllSubscriptions, unSubscribe } from "../../Managers/SubscriptionManager";
-import { getAllTags } from "../../managers/TagManager";
-
+import { WithContext as ReactTags } from 'react-tag-input';
+import { addTag, getAllTags, getImageTags, addImageTag } from "../../managers/TagManager";
 
 
 export const ImageDetails = () => {
@@ -12,8 +12,10 @@ export const ImageDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [allTags, setAllTags] = useState("")
+    const [tags, setAllTags] = useState("")
     const [thisTags, setThisTags] = useState("")
+
+    const downloadString = image.src?.slice(0, 49) + "/f_png/fl_attachment" + image.src?.slice(49) ?? "";
 
     //all post image links are broken, so need to replace them all with a default image
     const handleBrokenImage = (image) => {
@@ -29,7 +31,8 @@ export const ImageDetails = () => {
         getImage(id)
             .then(i => updateImage(i));
 
-        //getAllTags(id).then(setTag);
+        getAllTags().then(setAllTags);
+        getImageTags(id).then(setThisTags);
     }, []);
 
 
@@ -58,12 +61,58 @@ export const ImageDetails = () => {
         unSubscribe(subscription) */
     }
 
-    const handleDelete = (e) => {
+    const handleImageDelete = (e) => {
         deleteImage(image.id).then((e) => navigate('/'));
     }
-    const handleEdit = () => {
-
+    const handleImageEdit = () => {
+        navigate(`/imageEdit/${id}`);
     }
+
+    //#region tag methods
+    const handleDelete = i => {
+        setThisTags(thisTags.filter((tag, index) => index !== i));
+    };
+
+    const handleAddition = tag => {
+        //don't add tag if it's already in the list
+        if (tags.find(t => t.name == tag.name) == undefined) {
+            const newTag = {
+                name: tag.name
+            };
+            addTag(newTag)
+                .then(t => {
+                    setThisTags([...thisTags, t]);
+                })
+            getAllTags().then(t => setAllTags(t))
+        }
+
+        if (thisTags?.find(t => t.name == tag.name) == undefined) {
+            setThisTags([...thisTags, tag]);            
+            const newtags = thisTags
+            addImageTag({imageId: id, tagId: parseInt(newtags?.find(t => t.name == tag.name)?.id)})
+                .then(getImage(id).then(i => updateImage(i)));
+        }   
+
+    };
+
+    const handleDrag = (tag, currPos, newPos) => {
+        const newTags = thisTags.slice();
+
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+
+        // re-render
+        setThisTags(newTags);
+    };
+
+    const KeyCodes = {
+        comma: 188,
+        enter: 13,
+        tab: 9
+    };
+
+    const delimiters = [KeyCodes.comma, KeyCodes.enter];
+    //#endregion
 
     if (!image) {
         return null;
@@ -93,20 +142,36 @@ export const ImageDetails = () => {
                 </div>
                 <button onClick={(e) => navigate('/addTag')} style={{ marginTop: '15px', width: '120px' }}>Manage Tags</button> */}
                 <CardImg className="details-img" top src={image.src} alt={image.title} onError={handleBrokenImage} />
-                <a href={image.src}
-                    target="popup"
-                    onClick={()=>window.open(`${image.src}`,'popup','width=600,height=600')}>
-                    View image as actual size
-                </a>
-
+                <p>
+                    <a href={image.src}
+                        target="popup"
+                        onClick={() => window.open(`${image.src}`, 'popup', 'width=600,height=600')}>
+                        View image as actual size
+                    </a>
+                </p>
+                {downloadString ? <a href={downloadString}>Download</a> : ""}
+                <ReactTags
+                    inline
+                    tags={thisTags?.map(t => { return { id: `${t.id}`, name: t.name } })}
+                    suggestions={tags?.map(t => { return { id: `${t.id}`, name: t.name } })}
+                    delimiters={delimiters}
+                    handleDelete={handleDelete}
+                    handleAddition={handleAddition}
+                    handleDrag={handleDrag}
+                    inputFieldPosition="bottom"
+                    labelField={'name'}
+                    placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
+                    autocomplete
+                />
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
                 {userObject.id == image.userId
                     ? <>
-                        <button onClick={e => handleDelete(e)}>Delete</button>
-                        <button onClick={e => handleEdit(e)}>Edit</button>
+                        <button onClick={e => handleImageDelete(e)}>Delete</button>
+                        <button onClick={e => handleImageEdit(e)}>Edit</button>
                     </>
                     : ""
                 }
+                <p>{image.notes}</p>
             </CardBody>
         </Card>
     );
