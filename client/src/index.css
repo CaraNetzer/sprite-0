@@ -50,6 +50,8 @@ code {
 .board-image {
   width: 200px;
   height: 200px;
+  display: flex;
+  align-items: stretch;
 }
 
 .tile.is-parent {
@@ -146,4 +148,38 @@ code {
 
 .search-container button:hover {
   background: #ccc;
+}
+
+.heart {
+  font-size: 25px;
+	color:red;
+}
+
+.on-top {
+  display: flex; 
+}
+
+.on-hover {
+  display: none;
+}
+
+.not-hover {
+  position: absolute;
+  display: flex;
+  opacity: 0;  
+  align-items: space-between;
+  flex-direction: column;
+}
+
+.board-image:hover .not-hover {
+  opacity: 1;
+}
+
+.icon {
+  width: 7%;
+  height: auto;
+}
+
+.not-hover .row {
+  width: 200px;
 }
