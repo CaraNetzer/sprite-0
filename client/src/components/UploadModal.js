@@ -244,10 +244,11 @@ export function UploadModal({ setImageList }) {
                                 handleAddition={handleAddition}
                                 handleDrag={handleDrag}
                                 handleTagClick={handleTagClick}
-                                inputFieldPosition="bottom"
+                                inputFieldPosition="top"
                                 labelField={'name'}
                                 placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
                                 autocomplete
+                                autofocus={false}
                             />
                         </Form.Group>
                     </Form>

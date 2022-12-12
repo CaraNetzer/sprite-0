@@ -215,10 +215,11 @@ const ImageEdit = () => {
                     handleDelete={handleDelete}
                     handleAddition={handleAddition}
                     handleDrag={handleDrag}
-                    inputFieldPosition="bottom"
+                    inputFieldPosition="top"
                     labelField={'name'}
                     placeholder="ie 'Object,' 'Entity,' 'UI,' ..."
                     autocomplete
+                    autofocus={false}
                 />
             </Form.Group>
             <button className="btn btn-primary" style={{ marginRight: '10px' }} onClick={e => Edit(e)}>Edit</button>

@@ -25,7 +25,7 @@ const ImageBoard = ({ imageList }) => {
 						{images.length > 0 ? images?.map((image) => (
 							<>
 								<div key={image.id} className="tile is-parent board-tile">
-									<SingleImage image={image} publicId={publicId}/>
+									<SingleImage image={image} setImages={setImages}/>
 								</div>
 							</>
 						)) : <p>No images yet</p>}

@@ -22,10 +22,10 @@ code {
   height: 100%;
 }
 
-.image:hover {
-  opacity: 80%;
-  /* background-color: black; */
+.board-image:hover {
+  opacity: 55%;
 }
+
 
 .board {
   display: flex;
@@ -151,12 +151,14 @@ code {
 }
 
 .heart {
-  font-size: 25px;
+  font-size: 35px;
 	color:red;
 }
 
 .on-top {
   display: flex; 
+  margin: 0;
+  padding:0%;
 }
 
 .on-hover {
@@ -168,7 +170,8 @@ code {
   display: flex;
   opacity: 0;  
   align-items: space-between;
-  flex-direction: column;
+  flex-direction: column;  
+  margin-top: 2%;
 }
 
 .board-image:hover .not-hover {
@@ -176,10 +179,35 @@ code {
 }
 
 .icon {
-  width: 7%;
+  width: 100%;
   height: auto;
+  padding-top: 11px;
+}
+
+.icon-row {
+  justify-content: stretch;
 }
 
 .not-hover .row {
   width: 200px;
+}
+
+.fa-long-arrow-up {
+  font-size: 35px;
+}
+.fa-long-arrow-down {
+  font-size: 35px;
+}
+.arrow-text {
+  font-size: 35px;
+  padding: 0 7px;
+}
+
+.selected-arrow {
+  color: rgb(3, 255, 104);
+}
+
+.icon-row:hover {
+  background: rgb(255, 255, 255);
+  border-radius: 15px;
 }

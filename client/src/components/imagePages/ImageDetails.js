@@ -13,7 +13,9 @@ export const ImageDetails = () => {
     const [thisTags, setThisTags] = useState([])
     const [downloadString, setDownloadString] = useState("")
 
-    
+    const [favorite, setFavorite] = useState(false)
+
+
 
     //all post image links are broken, so need to replace them all with a default image
     const handleBrokenImage = (image) => {
@@ -30,13 +32,19 @@ export const ImageDetails = () => {
             .then(i => updateImage(i));
 
         getImageTags(id).then(setThisTags);
+
+        //getFolderImage(id).then(() => {
+        /* if data != null {
+            setFavorite(true)
+        }
+    }) */
     }, []);
 
 
 
     useEffect(() => {
         let newDownloadString = ""
-        if(image.src?.startsWith('https')) {
+        if (image.src?.startsWith('https')) {
             newDownloadString = image.src?.slice(0, 49) + "/f_png/fl_attachment" + image.src?.slice(49) ?? "";
         } else {
             newDownloadString = image.src?.slice(0, 49) + "f_png/fl_attachment/" + image.src?.slice(49) ?? "";
@@ -77,7 +85,7 @@ export const ImageDetails = () => {
         navigate(`/imageEdit/${id}`);
     }
 
-    
+
 
     if (!image) {
         return null;
@@ -88,19 +96,14 @@ export const ImageDetails = () => {
             <CardBody>
                 <strong>{image.title}</strong>
 
+                {/*{favorite 
+                    ? <i onClick={(e) => {							
+                        e.target.classList.toggle("fa-heart-o");
+                        {folderImage ? removeFavorite(e) : addFavorite(e)};
+                    }} className="icon heart fa fa-heart-o fa-heart"></i>
+                    : ""
+                } */}
                 <p>Artist: {image.artist}
-                    {/* {!subscribed && post.userProfileId != userObject.id
-                        ? <>
-                            <span>  |  </span><button onClick={e => Subscribe(e)}>Subscribe</button>
-                        </>
-                        : ""
-                    }
-                    {subscribed && foundSubscription?.endDateTime == "0001-01-01T00:00:00" /*make sure the subscription has not already ended
-                        ? <>
-                            <span>  | Subscribed ✅ | </span><span><button onClick={e => Unsubscribe(e)}>Unsubscribe</button></span>
-                        </>
-                        : ""
-                    } */}
                 </p>
                 <p>Uploaded by: <a href={`/profile/${image.user.id}`}>{image.user.username}</a></p>
                 <CardImg className="details-img" top src={image.src} alt={image.title} onError={handleBrokenImage} />
@@ -111,8 +114,8 @@ export const ImageDetails = () => {
                         View image as actual size
                     </a>
                 </p>
-                {downloadString ? <a href={downloadString}>Download</a> : ""}
-                {image.tags?.map(t => <p><a href="">{t.name}</a></p>)}
+                {downloadString ? <p><a href={downloadString}>Download</a></p> : ""}
+                {image.tags?.map(t => <p className="ReactTags__tag"><a onClick={() => navigate('/search')}>{t.name}</a></p>)}
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
                 {userObject.id == image.userId
                     ? <>
