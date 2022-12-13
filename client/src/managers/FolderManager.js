@@ -34,3 +34,8 @@ export const getImageFolders = (imageId) => {
   return fetch(`https://localhost:5001/api/folder/GetImageFolders?imageId=${imageId}`)
     .then((res) => res.json());
 };
+
+export const getFolderImages = (folderId) => {
+  return fetch(`https://localhost:5001/api/folder/GetFolderImages?folderId=${folderId}`)
+    .then((res) => res.json());
+};

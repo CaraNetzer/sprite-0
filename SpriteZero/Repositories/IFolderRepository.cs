@@ -14,5 +14,6 @@ namespace SpriteZero
         public void InsertIntoFolder(ImageFolder it);
         public void RemoveFromFolder(ImageFolder it);
         public List<Folder> GetAllFoldersByUser(int userId);
+        public List<Image> GetFolderImages(int folderId);
     }
 }

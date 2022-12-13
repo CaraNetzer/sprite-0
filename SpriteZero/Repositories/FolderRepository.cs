@@ -142,6 +142,51 @@ namespace SpriteZero
                 }
             }
         }
+
+        public List<Image> GetFolderImages(int folderId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT [if].Id as ImageFolderId, [if].ImageId, [if].FolderId, i.id, i.src, i.price, i.width, i.height, i.notes, i.title, i.sheet, i.upvotes, i.downvotes, i.artist, i.userId as ImageUserId
+                        FROM ImageFolder [if]
+                        join image i on [if].ImageId = i.id
+                        WHERE [if].FolderId = @folderId                       
+                    ";
+
+                    cmd.Parameters.AddWithValue("@folderId", folderId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Image> folderImages = new List<Image>();
+                    while (reader.Read())
+                    {
+                        folderImages.Add(new Image
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Src = DbUtils.GetString(reader, "src"),
+                            Price = (double)DbUtils.GetNullableDouble(reader, "Price"),
+                            Width = DbUtils.GetInt(reader, "Width"),
+                            Height = DbUtils.GetInt(reader, "Height"),
+                            Notes = DbUtils.GetString(reader, "Notes"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Sheet = reader.GetBoolean(reader.GetOrdinal("Sheet")),
+                            Upvotes = (int)DbUtils.GetNullableInt(reader, "Upvotes"),
+                            Downvotes = (int)DbUtils.GetNullableInt(reader, "Downvotes"),
+                            Artist = DbUtils.GetString(reader, "Artist"),
+                            UserId = DbUtils.GetInt(reader, "ImageUserId")
+                        });
+
+                    }
+                    reader.Close();
+                    return folderImages;
+                }
+            }
+        }
+
         public void Add(Folder folder)
         {
             using (var conn = Connection)

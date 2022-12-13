@@ -19,48 +19,50 @@ export const ImageDetails = () => {
     const [downloadString, setDownloadString] = useState("")
 
     const [favorite, setFavorite] = useState(false)
-	const [userFolders, setUserFolders] = useState("");
-	const [foldersThisImageIsIn, setFoldersThisImageIsIn] = useState([]);
+    const [userFolders, setUserFolders] = useState("");
+    const [foldersThisImageIsIn, setFoldersThisImageIsIn] = useState([]);
 
-	useEffect(() => {
-		getFoldersByUser(userObject.id).then(setUserFolders);
-		getImageFolders(image.id).then(setFoldersThisImageIsIn)
-	}, [])
 
-	useEffect(() => {
-		if (foldersThisImageIsIn.length > 0) {
-			if (foldersThisImageIsIn?.find(f => f.name == "Favorites" && f.userId == userObject.id)) {
-				setFavorite(true)
-			} else {
-				setFavorite(false)
-			}
-		} else {
-			setFavorite(false)
-		}
-	}, [foldersThisImageIsIn])
+    //#region favorites
+    useEffect(() => {
+        getFoldersByUser(userObject.id).then(setUserFolders);
+        getImageFolders(id).then(setFoldersThisImageIsIn)
+    }, [])
+    
+    useEffect(() => {
+        if (foldersThisImageIsIn.length > 0) {
+            if (foldersThisImageIsIn?.find(f => f.name == "Favorites" && f.userId == userObject.id)) {
+                setFavorite(true)
+            } else {
+                setFavorite(false)
+            }
+        } else {
+            setFavorite(false)
+        }
+    }, [foldersThisImageIsIn])
 
-	const addFavorite = (e) => {
-		e.preventDefault();
+    const addFavorite = (e) => {
+        e.preventDefault();
 
-		const imageFolder = {
-			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
-			imageId: image.id
-		}
+        const imageFolder = {
+            folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
+            imageId: image.id
+        }
 
-		addImageToFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
-	}
+        addImageToFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
+    }
 
-	const removeFavorite = (e) => {
-		e.preventDefault();
+    const removeFavorite = (e) => {
+        e.preventDefault();
 
-		const imageFolder = {
-			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
-			imageId: image.id
-		}
+        const imageFolder = {
+            folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
+            imageId: image.id
+        }
 
-		removeImageFromFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
-	}
-
+        removeImageFromFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
+    }
+    //#endregion
 
 
     //all post image links are broken, so need to replace them all with a default image
@@ -69,7 +71,7 @@ export const ImageDetails = () => {
         image.target.src = defaultImage;
     };
 
-    
+
     //set all state variables inside the useEffect instead of inside this component's methods    
     useEffect(() => {
         getImage(id)
@@ -97,31 +99,6 @@ export const ImageDetails = () => {
     }, [image])
 
 
-    const Favorite = (e) => {
-        e.preventDefault();
-
-        /*  const newFavorite = {
-             SubscriberUserProfileId: userObject.id,
-             ProviderUserProfileId: post.userProfileId
-         }
- 
-         addSubscription(newSubscription)
-             .then(() => setSubscribed(true)); */
-    }
-
-    const Unfavorite = (e) => {
-        e.preventDefault();
-
-        /* const favorite = {
-            id: foundSubscription.id,
-            SubscriberUserProfileId: userObject.id,
-            ProviderUserProfileId: post.userProfileId,
-            BeginDateTime: foundSubscription.beginDateTime
-        }
-
-        unSubscribe(subscription) */
-    }
-
     const handleImageDelete = (e) => {
         deleteImage(image.id).then((e) => navigate('/'));
     }
@@ -140,13 +117,20 @@ export const ImageDetails = () => {
             <CardBody>
                 <strong>{image.title}</strong>
 
-                {/*{favorite 
-                    ? <i onClick={(e) => {							
+                {favorite
+                    ? <i onClick={(e) => {
                         e.target.classList.toggle("fa-heart-o");
-                        {folderImage ? removeFavorite(e) : addFavorite(e)};
-                    }} className="icon heart fa fa-heart-o fa-heart"></i>
-                    : ""
-                } */}
+                        { favorite ? removeFavorite(e) : addFavorite(e) };
+                    }} className="icon heart fa fa-heart">
+
+                    </i>
+                    : <i onClick={(e) => {
+                        e.target.classList.toggle("fa-heart-o");
+                        { favorite ? removeFavorite(e) : addFavorite(e) };
+                    }} className="icon heart fa fa-heart-o fa-heart">
+
+                    </i>
+                }
                 <p>Artist: {image.artist}
                 </p>
                 <p>Uploaded by: <a href={`/profile/${image.user.id}`}>{image.user.username}</a></p>

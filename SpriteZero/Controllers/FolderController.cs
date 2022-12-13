@@ -81,6 +81,12 @@ namespace SpriteZero
             return Ok(_folderRepo.GetImageFolders(imageId));
         }
 
+        [HttpGet("GetFolderImages")]
+        public IActionResult GetFolderImages(int folderId)
+        {
+            return Ok(_folderRepo.GetFolderImages(folderId));
+        }
+
         // PUT api/<FolderController>/5
         [HttpPut("{id}")]
         public IActionResult Update(int id, Folder folder)
