@@ -52,7 +52,7 @@ export const MyProfile = ({ imageList }) => {
 						{favorites.length > 0 ? favorites?.map((image) => (
 							<>
 								<div key={image.id} className="tile is-parent board-tile">
-									<SingleImage image={image} />
+									<SingleImage setFavorites={setFavorites} image={image} />
 								</div>
 							</>
 						)) : <p>No favorites yet</p>}

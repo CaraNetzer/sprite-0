@@ -189,7 +189,7 @@ code {
 }
 
 .not-hover .row {
-  width: 200px;
+  width: 190px;
 }
 
 .fa-long-arrow-up {
@@ -203,8 +203,11 @@ code {
   padding: 0 7px;
 }
 
-.selected-arrow {
+.selected-arrow-up {
   color: rgb(3, 255, 104);
+}
+.selected-arrow-down {
+  color: rgb(255, 24, 3);
 }
 
 .icon-row:hover {
