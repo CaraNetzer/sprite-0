@@ -30,6 +30,7 @@ namespace SpriteZero
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
+            services.AddTransient<IFolderRepository, FolderRepository>();
 
 
             services.AddControllers();

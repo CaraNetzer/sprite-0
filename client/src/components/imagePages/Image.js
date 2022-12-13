@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { Image } from "cloudinary-react";
-import { getFolderImage } from "../../managers/FolderManager";
+import { addImageToFolder, removeImageFromFolder, getFoldersByUser, getImageFolders } from "../../managers/FolderManager";
 
 
 
@@ -10,35 +10,57 @@ export const SingleImage = ({ image, setImages }) => {
 
 	const navigate = useNavigate();
 
-	const [folderImage, setFolderImage] = useState("");
+	const localUser = localStorage.getItem("userProfile")
+	const userObject = JSON.parse(localUser)
+
+	const [favorite, setFavorite] = useState(false);
+	const [userFolders, setUserFolders] = useState("");
+	const [foldersThisImageIsIn, setFoldersThisImageIsIn] = useState([]);
 
 	useEffect(() => {
-		getFolderImage(image.id).then(setFolderImage)
-	},[])
+		getFoldersByUser(userObject.id).then(setUserFolders);
+		getImageFolders(image.id).then(setFoldersThisImageIsIn)
+	}, [])
+
+	useEffect(() => {
+		if (foldersThisImageIsIn.length > 0) {
+			if (foldersThisImageIsIn?.find(f => f.name == "Favorites" && f.userId == userObject.id)) {
+				setFavorite(true)
+			} else {
+				setFavorite(false)
+			}
+		} else {
+			setFavorite(false)
+		}
+	}, [foldersThisImageIsIn])
 
 	const addFavorite = (e) => {
 		e.preventDefault();
 
-		const folderImage = {
-			folderId: 1,
+		const imageFolder = {
+			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
 			imageId: image.id
 		}
 
-		console.log({folderImage})
+		addImageToFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
 	}
 
 	const removeFavorite = (e) => {
 		e.preventDefault();
 
+		const imageFolder = {
+			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
+			imageId: image.id
+		}
 
-		//console.log({folderImage})
+		removeImageFromFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
 	}
-	
+
 	const upvote = (e) => {
 		e.preventDefault();
-		
+
 	}
-	
+
 	const downvote = (e) => {
 		e.preventDefault();
 
@@ -54,10 +76,20 @@ export const SingleImage = ({ image, setImages }) => {
 			<Container className="not-hover">
 				<Row className="icon-row">
 					<Col className="on-top">
-						<i onClick={(e) => {							
-							e.target.classList.toggle("fa-heart-o");
-							{folderImage ? removeFavorite(e) : addFavorite(e)};
-						}} className="icon heart fa fa-heart-o fa-heart"></i>
+						{favorite
+							? <i onClick={(e) => {
+								e.target.classList.toggle("fa-heart-o");
+								{ favorite ? removeFavorite(e) : addFavorite(e) };
+							}} className="icon heart fa fa-heart">
+
+							</i>
+							: <i onClick={(e) => {
+								e.target.classList.toggle("fa-heart-o");
+								{ favorite ? removeFavorite(e) : addFavorite(e) };
+							}} className="icon heart fa fa-heart-o fa-heart">
+
+							</i>
+						}
 					</Col>
 					<Col className="on-top">
 						<i onClick={(e) => {

@@ -17,7 +17,7 @@ export default function ApplicationViews( { imageList }) {
         <Route path="/" element={<ImageBoard imageList={imageList}/>} />
         <Route path="/image/:id" element={<ImageDetails />} />
         <Route path="/imageEdit/:id" element={<ImageEdit />} />        
-        <Route path="/search" element={<Search />} />        
+        <Route path="/search/:id" element={<Search />} />        
         <Route path="/myProfile" element={<MyProfile />} />      
         <Route path="/profile/:id" element={<UserProfile />} />      
         <Route path="*" element={<p>Whoops, nothing here...</p>} />

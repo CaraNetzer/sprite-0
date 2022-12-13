@@ -4,24 +4,24 @@ const baseUrl = '/api/folder';
 
 
 
-export const getById = (id) => {
-  return fetch(`https://localhost:5001/api/folder/${id}`)
+export const getFoldersByUser = (userId) => {
+  return fetch(`https://localhost:5001/api/folder/GetByUser?userId=${userId}`)
     .then((res) => res.json());
 };
 
 
-export const addFolderImage = (folderImage) => {
-  return fetch(`https://localhost:5001/api/folder/AddFolderImage`, {
+export const addImageToFolder = (folderImage) => {
+  return fetch(`https://localhost:5001/api/folder/AddToImageFolder`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(folderImage),
-  }).then((res) => res.json());
+  })
 };
 
-export const removeFolderImage = (folderImage) => {
-  return fetch(`https://localhost:5001/api/folder/removeFolderImage`, {
+export const removeImageFromFolder = (folderImage) => {
+  return fetch(`https://localhost:5001/api/folder/RemoveFromImageFolder`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const removeFolderImage = (folderImage) => {
   })
 }
 
-export const getFolderImage = (imageId) => {
-  return fetch(`https://localhost:5001/api/tag/GetFolderImages?imageId=${imageId}`)
+export const getImageFolders = (imageId) => {
+  return fetch(`https://localhost:5001/api/folder/GetImageFolders?imageId=${imageId}`)
     .then((res) => res.json());
 };

@@ -3,9 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardImg, CardBody } from "reactstrap";
 import { getImage, deleteImage } from "../../managers/ImageManager";
 import { getImageTags } from "../../managers/TagManager";
+import { addImageToFolder, removeImageFromFolder, getFoldersByUser, getImageFolders } from "../../managers/FolderManager";
 
 
 export const ImageDetails = () => {
+
+    const localUser = localStorage.getItem("userProfile")
+    const userObject = JSON.parse(localUser)
+
     const [image, updateImage] = useState("");
     const { id } = useParams();
     const navigate = useNavigate();
@@ -14,6 +19,47 @@ export const ImageDetails = () => {
     const [downloadString, setDownloadString] = useState("")
 
     const [favorite, setFavorite] = useState(false)
+	const [userFolders, setUserFolders] = useState("");
+	const [foldersThisImageIsIn, setFoldersThisImageIsIn] = useState([]);
+
+	useEffect(() => {
+		getFoldersByUser(userObject.id).then(setUserFolders);
+		getImageFolders(image.id).then(setFoldersThisImageIsIn)
+	}, [])
+
+	useEffect(() => {
+		if (foldersThisImageIsIn.length > 0) {
+			if (foldersThisImageIsIn?.find(f => f.name == "Favorites" && f.userId == userObject.id)) {
+				setFavorite(true)
+			} else {
+				setFavorite(false)
+			}
+		} else {
+			setFavorite(false)
+		}
+	}, [foldersThisImageIsIn])
+
+	const addFavorite = (e) => {
+		e.preventDefault();
+
+		const imageFolder = {
+			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
+			imageId: image.id
+		}
+
+		addImageToFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
+	}
+
+	const removeFavorite = (e) => {
+		e.preventDefault();
+
+		const imageFolder = {
+			folderId: userFolders.find(f => f.userId == userObject.id && f.name == "Favorites").id,
+			imageId: image.id
+		}
+
+		removeImageFromFolder(imageFolder).then(getImageFolders(image.id)).then(setFoldersThisImageIsIn);
+	}
 
 
 
@@ -23,9 +69,7 @@ export const ImageDetails = () => {
         image.target.src = defaultImage;
     };
 
-    const localUser = localStorage.getItem("userProfile")
-    const userObject = JSON.parse(localUser)
-
+    
     //set all state variables inside the useEffect instead of inside this component's methods    
     useEffect(() => {
         getImage(id)
@@ -115,7 +159,7 @@ export const ImageDetails = () => {
                     </a>
                 </p>
                 {downloadString ? <p><a href={downloadString}>Download</a></p> : ""}
-                {image.tags?.map(t => <p className="ReactTags__tag"><a onClick={() => navigate('/search')}>{t.name}</a></p>)}
+                {image.tags?.map(t => <p className="ReactTags__tag"><a onClick={() => navigate(`/search/${t.name}`)}>{t.name}</a></p>)}
                 {/* making sure a user only has access to the delete button if they were the one who created it */}
                 {userObject.id == image.userId
                     ? <>

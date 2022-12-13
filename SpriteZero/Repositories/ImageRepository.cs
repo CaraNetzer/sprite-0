@@ -26,7 +26,8 @@ namespace SpriteZero
                                         FROM Image i
                                         JOIN [User] u on i.userId = u.Id
                                         left join [ImageTag] pt on i.Id = pt.ImageId
-                                        left join [Tag] t on pt.TagId = t.Id;";
+                                        left join [Tag] t on pt.TagId = t.Id
+                                        ORDER BY i.upvotes DESC;";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -154,7 +155,8 @@ namespace SpriteZero
                                         JOIN [User] u on i.userId = u.Id
                                         left join [ImageTag] pt on i.Id = pt.ImageId
                                         left join [Tag] t on pt.TagId = t.Id
-                                        WHERE i.UserId = @userId;";
+                                        WHERE i.UserId = @userId
+                                        ORDER BY i.upvotes DESC;";
                     cmd.Parameters.AddWithValue("userId", userId);
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -307,7 +309,8 @@ namespace SpriteZero
                             JOIN [User] u on i.userId = u.Id
                             left join [ImageTag] pt on i.Id = pt.ImageId
                             left join [Tag] t on pt.TagId = t.Id
-                            WHERE i.Title LIKE @Criterion OR i.Notes LIKE @Criterion OR t.Name LIKE @Criterion";                    
+                            WHERE i.Title LIKE @Criterion OR i.Notes LIKE @Criterion OR t.Name LIKE @Criterion
+                            ORDER BY i.upvotes DESC";                    
 
                     cmd.CommandText = sql;
 
