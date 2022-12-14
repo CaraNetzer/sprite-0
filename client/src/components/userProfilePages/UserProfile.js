@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
 
 
-export const UserProfile = ({ imageList }) => {
-	const [images, setImages] = useState([]);
+export const UserProfile = ({ imageList, setImages, images }) => {
 
     const { id } = useParams();
 

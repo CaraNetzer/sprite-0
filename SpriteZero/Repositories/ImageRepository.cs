@@ -247,7 +247,9 @@ namespace SpriteZero
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM Image WHERE id = @id";
+                    cmd.CommandText = @"DELETE FROM ImageTag WHERE ImageId = @id
+                                        DELETE FROM ImageFolder WHERE ImageId = @id
+                                        DELETE FROM Image WHERE id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
                     cmd.ExecuteNonQuery();

@@ -41,7 +41,7 @@ export const Search = () => {
 						{searchResults.length > 0 ? searchResults?.map((i) => (
 							<>
 								<div className="tile is-parent board-tile">
-									<SingleImage key={i.id} image={i}/>
+									<SingleImage key={i.id} image={i} setSearchResults={setSearchResults} query={query} />
 								</div>
 							</>
 						)) : ""}

@@ -12,6 +12,7 @@ function App() {
 
   const [ isLoggedIn, setIsLoggedIn ] = useState(true);
   const [imageList, setImageList] = useState("");
+  const [images, setImages] = useState([]);
 
   useEffect(()=>{
     if(!localStorage.getItem("userProfile")){
@@ -24,7 +25,7 @@ function App() {
     <Router>
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setImageList={setImageList}/>
         { isLoggedIn 
-            ? <ApplicationViews  imageList={imageList} />
+            ? <ApplicationViews  imageList={imageList} setImages={setImages} images={images} />
             : <Authorize setIsLoggedIn={setIsLoggedIn}/>
         }
     </Router>

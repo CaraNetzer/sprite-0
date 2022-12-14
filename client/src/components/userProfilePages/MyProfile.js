@@ -6,8 +6,7 @@ import { getFoldersByUser, getFolderImages } from "../../managers/FolderManager"
 import { getImage } from "../../managers/ImageManager";
 
 
-export const MyProfile = ({ imageList }) => {
-	const [images, setImages] = useState([]);
+export const MyProfile = ({ imageList, setImages, images }) => {
 	const [userFolders, setUserFolders] = useState([]);
 	const [favorites, setFavorites] = useState([]);
 
@@ -38,7 +37,7 @@ export const MyProfile = ({ imageList }) => {
 						{images.length > 0 ? images?.filter(i => i.userId == userObject.id).map((image) => (
 							<>
 								<div key={image.id} className="tile is-parent board-tile">
-									<SingleImage image={image} />
+									<SingleImage image={image} setFavorites={setFavorites} setImages={setImages}/>
 								</div>
 							</>
 						)) : <p>No images yet</p>}
@@ -52,7 +51,7 @@ export const MyProfile = ({ imageList }) => {
 						{favorites.length > 0 ? favorites?.map((image) => (
 							<>
 								<div key={image.id} className="tile is-parent board-tile">
-									<SingleImage setFavorites={setFavorites} image={image} />
+									<SingleImage setFavorites={setFavorites} image={image} setImages={setImages} />
 								</div>
 							</>
 						)) : <p>No favorites yet</p>}

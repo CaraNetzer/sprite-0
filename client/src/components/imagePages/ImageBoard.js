@@ -4,8 +4,8 @@ import { getAllImages } from "../../managers/ImageManager";
 import { Link } from "react-router-dom";
 
 
-const ImageBoard = ({ imageList }) => {
-	const [images, setImages] = useState([]);
+const ImageBoard = ({ imageList, setImages, images }) => {
+	
 	const [publicId, setPublicId] = useState("")
 
 

@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Image } from "cloudinary-react";
 import { addImageToFolder, removeImageFromFolder, getFoldersByUser, getImageFolders, getFolderImages } from "../../managers/FolderManager";
 import { editImage } from "../../managers/ImageManager";
+import { getAllImages } from "../../managers/ImageManager";
+import { searchDbImages } from "../../managers/ImageManager";
 
 
 
-export const SingleImage = ({ image, setFavorites }) => {
+export const SingleImage = ({ image, setFavorites, setImages, query, setSearchResults }) => {
 
 	const navigate = useNavigate();
 
@@ -50,7 +52,7 @@ export const SingleImage = ({ image, setFavorites }) => {
 			.then( () => {
 				const favoritesFolderId = userFolders.find(f => f.name == "Favorites").id
 				getFolderImages(favoritesFolderId).then(setFavorites);
-			})
+			}).then(() => getAllImages()).then(i => setImages(i))
 
 	}
 
@@ -66,7 +68,8 @@ export const SingleImage = ({ image, setFavorites }) => {
 			.then( () => {
 				const favoritesFolderId = userFolders.find(f => f.name == "Favorites").id
 				getFolderImages(favoritesFolderId).then(setFavorites);
-			})
+			}).then(() => getAllImages()).then(i => setImages(i));
+			//the heart in the top list is not updating bc these .thens are out fo order
 	}
 
 	const upvote = (e) => {
@@ -75,7 +78,8 @@ export const SingleImage = ({ image, setFavorites }) => {
 		updatedImage.upvotes = updatedImage.upvotes + 1
 		updatedImage.User = null;
 		editImage(updatedImage)
-			//.then()
+			.then(getAllImages().then(i => { setImages(i); }))
+			//.then(searchDbImages(query).then(setSearchResults))
 	}
 	
 	const downvote = (e) => {
@@ -84,7 +88,8 @@ export const SingleImage = ({ image, setFavorites }) => {
 		updatedImage.upvotes = updatedImage.upvotes - 1
 		updatedImage.User = null;
 		editImage(updatedImage)
-			//.then()
+			.then(getAllImages().then(i => { setImages(i); }))
+			//.then(searchDbImages(query).then(setSearchResults))
 	}
 
 

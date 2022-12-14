@@ -99,7 +99,7 @@ export const ImageDetails = () => {
     }, [image])
 
 
-    const handleImageDelete = (e) => {
+    const handleImageDelete = (e) => {       
         deleteImage(image.id).then((e) => navigate('/'));
     }
     const handleImageEdit = () => {
