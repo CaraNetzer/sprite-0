@@ -9,12 +9,12 @@ import { MyProfile } from "./userProfilePages/MyProfile";
 import { UserProfile } from "./userProfilePages/UserProfile";
 
 
-export default function ApplicationViews( { imageList, setImages, images }) {
+export default function ApplicationViews( { imageList, setImages, images, changeColor }) {
 
     return (
       <Routes>
   
-        <Route path="/" element={<ImageBoard imageList={imageList} setImages={setImages} images={images} />} />
+        <Route path="/" element={<ImageBoard changeColor={changeColor} imageList={imageList} setImages={setImages} images={images} />} />
         <Route path="/image/:id" element={<ImageDetails />} />
         <Route path="/imageEdit/:id" element={<ImageEdit />} />        
         <Route path="/search/:id" element={<Search setImages={setImages} images={images}/>} />        

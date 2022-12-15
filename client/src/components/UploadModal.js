@@ -147,7 +147,7 @@ export function UploadModal({ setImageList }) {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+            <Button id="upload-button" className="btn btn-info" variant="primary" onClick={handleShow}>
                 Upload Image
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>

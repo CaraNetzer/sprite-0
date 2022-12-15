@@ -9,7 +9,7 @@ import { searchDbImages } from "../../managers/ImageManager";
 
 
 
-export const SingleImage = ({ image, setFavorites, setImages, query, setSearchResults }) => {
+export const SingleImage = ({ image, setFavorites, setImages, query, setSearchResults, changeColor }) => {
 
 	const navigate = useNavigate();
 
@@ -23,9 +23,36 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 	const [upvoted, setUpvoted] = useState(false);
 	const [downvoted, setDownvoted] = useState(false);
 
+
+	const colors = ["#bbf6ff", "#b6e7ff", "#b6caff", "#e8b6ff"];
+
+
+
+	const changeImageColor = () => {
+
+		const imageNodes = document.querySelectorAll(".image");
+
+		for (let i = 0; i < imageNodes.length; i++) {
+			var lastColorIndex = localStorage.getItem('lastImageColorIndex') || -1;
+			var randomColor = -1;
+			while (lastColorIndex == randomColor || randomColor === -1) {
+				randomColor = Math.floor(Math.random() * colors.length);
+				while (colors[randomColor] === document.body.style.backgroundColor) {
+					randomColor = Math.floor(Math.random() * colors.length);
+				}
+			};
+			
+			localStorage.setItem('lastImageColorIndex', randomColor);
+			imageNodes[i].style.backgroundColor = colors[randomColor];
+		}
+	}
+
 	useEffect(() => {
 		getFoldersByUser(userObject.id).then(setUserFolders);
-		getImageFolders(image.id).then(setFoldersThisImageIsIn)
+		getImageFolders(image.id).then(setFoldersThisImageIsIn);
+
+		changeImageColor();
+
 	}, [])
 
 	useEffect(() => {
@@ -49,7 +76,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		}
 
 		addImageToFolder(imageFolder).then(() => getImageFolders(image.id)).then(setFoldersThisImageIsIn)
-			.then( () => {
+			.then(() => {
 				const favoritesFolderId = userFolders.find(f => f.name == "Favorites").id
 				getFolderImages(favoritesFolderId).then(setFavorites);
 			}).then(() => getAllImages()).then(i => setImages(i))
@@ -65,11 +92,11 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		}
 
 		removeImageFromFolder(imageFolder).then(() => getImageFolders(image.id)).then(setFoldersThisImageIsIn)
-			.then( () => {
+			.then(() => {
 				const favoritesFolderId = userFolders.find(f => f.name == "Favorites").id
 				getFolderImages(favoritesFolderId).then(setFavorites);
 			}).then(() => getAllImages()).then(i => setImages(i));
-			//the heart in the top list is not updating bc these .thens are out fo order
+		//the heart in the top list is not updating bc these .thens are out fo order
 	}
 
 	const upvote = (e) => {
@@ -79,9 +106,9 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		updatedImage.User = null;
 		editImage(updatedImage)
 			.then(getAllImages().then(i => { setImages(i); }))
-			//.then(searchDbImages(query).then(setSearchResults))
+		//.then(searchDbImages(query).then(setSearchResults))
 	}
-	
+
 	const downvote = (e) => {
 		e.preventDefault();
 		const updatedImage = { ...image }
@@ -89,7 +116,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		updatedImage.User = null;
 		editImage(updatedImage)
 			.then(getAllImages().then(i => { setImages(i); }))
-			//.then(searchDbImages(query).then(setSearchResults))
+		//.then(searchDbImages(query).then(setSearchResults))
 	}
 
 
@@ -97,7 +124,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		<figure className="board-image tile is-child">
 
 
-			<img onClick={() => navigate(`/image/${image.id}`)} className="image" src={image.src}></img>
+			<img onClick={() => { navigate(`/image/${image.id}`); changeColor(); }} className="image" src={image.src}></img>
 
 			<Container className="not-hover">
 				<Row className="icon-row">
@@ -130,7 +157,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 								e.target.classList.toggle("selected-arrow-up");
 								upvote(e);
 							}} className=" icon fa fa-long-arrow-up"></i>
-						}						
+						}
 						<span className="arrow-text"> {image.upvotes} </span>
 						{downvoted
 							? <i onClick={(e) => {
@@ -138,13 +165,13 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 								e.target.classList.toggle("selected-arrow-down");
 								upvote(e);
 							}} className=" icon fa fa-long-arrow-down"></i>
-							
+
 							: <i onClick={(e) => {
 								setDownvoted(true)
 								e.target.classList.toggle("selected-arrow-down");
 								downvote(e);
 							}} className=" icon fa fa-long-arrow-down"></i>
-						}												
+						}
 					</Col>
 				</Row>
 			</Container>

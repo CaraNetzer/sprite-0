@@ -35,7 +35,7 @@ export const Search = () => {
                         <button type="submit"><i className="fa fa-search"></i></button>
                 </form>
             </div>
-            <div className="results">
+            <div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">
 						{searchResults.length > 0 ? searchResults?.map((i) => (

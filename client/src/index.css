@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: "Press Start 2P";
 }
 
 code {
@@ -13,13 +14,14 @@ code {
 }
 
 .auth {
-  margin:auto;
+  margin: auto;
   width: 50%;
 }
 
 .image {
   width: 100%;
   height: 100%;
+  background-color: #f9feb1;
 }
 
 .board-image:hover {
@@ -43,7 +45,7 @@ code {
 }
 
 .board-tile:hover {
-  box-shadow: 0 0 11px rgba(33,33,33,.4); 
+  box-shadow: 0 0 11px rgba(33, 33, 33, .4);
   border: 2px solid lightblue;
 }
 
@@ -77,12 +79,19 @@ code {
 
 .details-img {
   /* max-width: 75%;  */
-  max-width: 25%;
+  max-width: 100%;
   height: auto;
+  border-top: 1px solid black;
 }
 
-.ReactTags__tag
-{
+.card-img-top {
+  border-bottom-left-radius: var(--bs-card-inner-border-radius);
+  border-bottom-right-radius: var(--bs-card-inner-border-radius);
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.ReactTags__tag {
   background: #B8DCDB;
   font-size: 14px;
   font-weight: 600;
@@ -100,18 +109,18 @@ code {
 
 .ReactTags__tagInputField {
   display: block;
-    width: 100%;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    appearance: none;
-    border-radius: 0.375rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.375rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 .ReactTags__tagInputField:focus {
@@ -123,8 +132,9 @@ code {
 }
 
 .search-container {
-  width:75%;
-  margin:10%;
+  width: 75%;
+  margin: 10%;
+  margin-bottom: 5%;
 }
 
 #search-input[type=text] {
@@ -152,13 +162,13 @@ code {
 
 .heart {
   font-size: 35px;
-	color:red;
+  color: red;
 }
 
 .on-top {
-  display: flex; 
+  display: flex;
   margin: 0;
-  padding:0%;
+  padding: 0%;
 }
 
 .on-hover {
@@ -168,9 +178,9 @@ code {
 .not-hover {
   position: absolute;
   display: flex;
-  opacity: 0;  
+  opacity: 0;
   align-items: space-between;
-  flex-direction: column;  
+  flex-direction: column;
   margin-top: 2%;
 }
 
@@ -195,9 +205,11 @@ code {
 .fa-long-arrow-up {
   font-size: 35px;
 }
+
 .fa-long-arrow-down {
   font-size: 35px;
 }
+
 .arrow-text {
   font-size: 35px;
   padding: 0 7px;
@@ -206,6 +218,7 @@ code {
 .selected-arrow-up {
   color: rgb(3, 255, 104);
 }
+
 .selected-arrow-down {
   color: rgb(255, 24, 3);
 }
@@ -213,4 +226,134 @@ code {
 .icon-row:hover {
   background: rgb(255, 255, 255);
   border-radius: 15px;
+}
+
+#body {
+  background-color: rgb(108, 0, 189);
+}
+
+html {
+  background-color: rgb(108, 0, 189);
+}
+
+#navbar {
+  background-color: inherit;
+  padding: 7%;
+}
+
+/* #header {
+  height: 400px
+} */
+
+.page-header {
+  margin: 2% 0 0 10%;
+  font-family: "Press Start 2P";
+}
+
+.card {
+  margin: auto;
+  width: 80%;
+}
+
+#nav-2 {
+  margin: auto;
+  font-family: "Press Start 2P";
+}
+
+#nav-1 {
+  margin-right: 0;
+  font-family: "Press Start 2P";
+  justify-content: space-evenly;
+}
+
+#nav-3 {
+  margin-right: 0;
+  font-family: "Press Start 2P";
+}
+
+#hr {
+  width: 90%;
+  margin: auto;
+  height: 30px;
+}
+
+#image-details-header {
+  display: flex;
+  padding-top: 3px;
+}
+
+#artist {
+  max-width: 100%;
+  padding-top: 1%;
+}
+
+#image-title {
+  width: 40%;
+  min-width: 60%;
+}
+
+#image-card {
+  display: flex;
+  flex: 0 0 50%;
+
+}
+
+#image-card-left {
+  width: 50% !important;
+}
+
+#image-card-right {
+  width: 50% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+#top-level-image-card {
+  margin: auto !important;
+
+  margin-top: 3% !important;
+  margin-bottom: 3% !important;
+}
+
+#image-links {
+  display: flex;
+  flex-direction: row;
+}
+
+#download-button {
+
+  color: white !important;
+
+}
+
+#image-edit-form {
+  width: 60%;
+  margin: auto;
+}
+
+.nav-link {
+  margin-right: 1em;
+}
+
+#upload-button {
+  margin-right: 1em;
+}
+
+#image-notes {
+  white-space: pre-line;
+  border: 1px solid black;
+  width: 60%;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 4%;
+  margin-bottom: 8%;
+}
+
+.btn-success {
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.edit {
+  margin-right: 1%;
 }

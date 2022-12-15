@@ -15,7 +15,7 @@ export const UserProfile = ({ imageList, setImages, images }) => {
 
 	return (
 		<>			
-			<h1>{images[0]?.user.username}'s Uploads</h1>
+			<h2 className="page-header">{images[0]?.user.username}'s Uploads</h2>
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">

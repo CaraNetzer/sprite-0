@@ -30,7 +30,7 @@ export const MyProfile = ({ imageList, setImages, images }) => {
 
 	return (
 		<>
-			<h1>My Uploads</h1>
+			<h2 className="page-header">My Uploads</h2>
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">
@@ -44,7 +44,7 @@ export const MyProfile = ({ imageList, setImages, images }) => {
 					</div>
 				</div>
 			</div>
-			<h1>My Favorites</h1>
+			<h2 className="page-header">My Favorites</h2>
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">

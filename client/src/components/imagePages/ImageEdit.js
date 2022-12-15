@@ -129,7 +129,7 @@ const ImageEdit = () => {
     //#endregion
 
     return (
-        <Form>
+        <Form id="image-edit-form">
             <Image id="img-preview" cloudName="dkndgz1ge" publicId={image.Src} />
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <Form.Label>Title</Form.Label>
@@ -223,7 +223,7 @@ const ImageEdit = () => {
                 />
             </Form.Group>
             <button className="btn btn-primary" style={{ marginRight: '10px' }} onClick={e => Edit(e)}>Edit</button>
-            <button onClick={e => Cancel()}>Cancel</button>
+            <button className="btn btn-secondary" onClick={e => Cancel()}>Cancel</button>
         </Form>
     )
 }

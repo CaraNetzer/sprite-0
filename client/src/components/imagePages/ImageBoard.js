@@ -4,8 +4,8 @@ import { getAllImages } from "../../managers/ImageManager";
 import { Link } from "react-router-dom";
 
 
-const ImageBoard = ({ imageList, setImages, images }) => {
-	
+const ImageBoard = ({ imageList, setImages, images, changeColor }) => {
+
 	const [publicId, setPublicId] = useState("")
 
 
@@ -17,15 +17,14 @@ const ImageBoard = ({ imageList, setImages, images }) => {
 	}, [imageList]);
 
 	return (
-		<>			
-			<h1>Images</h1>
+		<>
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="tile is-ancestor board">
 						{images.length > 0 ? images?.map((image) => (
 							<>
-								<div  className="tile is-parent board-tile">
-									<SingleImage key={image.id} image={image} setImages={setImages}/>
+								<div className="tile is-parent board-tile">
+									<SingleImage changeColor={changeColor} key={image.id} image={image} setImages={setImages} />
 								</div>
 							</>
 						)) : <p>No images yet</p>}
