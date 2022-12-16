@@ -23,7 +23,8 @@ function App() {
     changeColor()
   }, [isLoggedIn])
 
-  const colors = ["#bbf6ff", "#b6e7ff", "#b6caff", "#e8b6ff"];
+  //const colors = ["#bbf6ff", "#b6e7ff", "#b6caff", "#e8b6ff"];
+  const colors = ["#defbff", "#d7eefa", "#d9e2fa", "#f5e0ff", "#fcfcf2", "#faecd9", "#e4fce1"];
 
   const changeColor = () => {
 

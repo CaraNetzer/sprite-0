@@ -60,8 +60,7 @@ export default function Header({ isLoggedIn, setIsLoggedIn, setImageList, change
 						</Nav>
 					</Collapse>
 				</Navbar>
-
-				<hr id='hr'></hr>
+				{/* <hr id='hr'></hr> */}			
 			</div>
 		</div>
 	</>

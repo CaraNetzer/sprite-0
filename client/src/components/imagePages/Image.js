@@ -105,7 +105,8 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		updatedImage.upvotes = updatedImage.upvotes + 1
 		updatedImage.User = null;
 		editImage(updatedImage)
-			.then(getAllImages().then(i => { setImages(i); }))
+			.then(getAllImages().then(setImages))
+			.then(console.log(image));
 		//.then(searchDbImages(query).then(setSearchResults))
 	}
 
@@ -115,7 +116,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		updatedImage.upvotes = updatedImage.upvotes - 1
 		updatedImage.User = null;
 		editImage(updatedImage)
-			.then(getAllImages().then(i => { setImages(i); }))
+			.then(getAllImages().then(setImages))
 		//.then(searchDbImages(query).then(setSearchResults))
 	}
 

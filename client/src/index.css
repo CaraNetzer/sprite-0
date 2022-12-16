@@ -32,6 +32,7 @@ code {
 .board {
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
 }
 
 .board-tile {
@@ -81,7 +82,6 @@ code {
   /* max-width: 75%;  */
   max-width: 100%;
   height: auto;
-  border-top: 1px solid black;
 }
 
 .card-img-top {
@@ -133,8 +133,7 @@ code {
 
 .search-container {
   width: 75%;
-  margin: 10%;
-  margin-bottom: 5%;
+  margin: 10% auto 5% auto;  
 }
 
 #search-input[type=text] {
@@ -239,15 +238,18 @@ html {
 #navbar {
   background-color: inherit;
   padding: 7%;
+  border-radius: 0 0 85% 85% / 30%;
 }
 
-/* #header {
-  height: 400px
-} */
+#header {
+  border-radius: 0 0 85% 85% / 30%;
+  box-shadow: 0 0 5px #212529;
+}
 
 .page-header {
   margin: 2% 0 0 10%;
   font-family: "Press Start 2P";
+  
 }
 
 .card {
@@ -258,17 +260,23 @@ html {
 #nav-2 {
   margin: auto;
   font-family: "Press Start 2P";
+  width: 33%;
+  justify-content: center;
+  display: flex;
 }
 
 #nav-1 {
   margin-right: 0;
   font-family: "Press Start 2P";
   justify-content: space-evenly;
+  width: 33%;
 }
 
 #nav-3 {
   margin-right: 0;
   font-family: "Press Start 2P";
+  width: 33%;
+  justify-content: space-evenly;
 }
 
 #hr {
@@ -329,6 +337,7 @@ html {
 #image-edit-form {
   width: 60%;
   margin: auto;
+  margin-bottom: 5%;
 }
 
 .nav-link {
@@ -356,4 +365,23 @@ html {
 
 .edit {
   margin-right: 1%;
+}
+
+#plants {
+  position: absolute;
+  top: 10px;
+}
+
+#home-page {
+  display: flex;
+  flex-direction: row
+}
+
+.tag-list-item {
+  width: 15%;
+  margin-top: 2%;
+}
+
+#tag-list-title {
+  font-family: "Press Start 2P";
 }

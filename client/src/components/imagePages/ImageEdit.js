@@ -222,7 +222,7 @@ const ImageEdit = () => {
                     autofocus={false}
                 />
             </Form.Group>
-            <button className="btn btn-primary" style={{ marginRight: '10px' }} onClick={e => Edit(e)}>Edit</button>
+            <button className="btn btn-primary" style={{ marginRight: '10px' }} onClick={e => Edit(e)}>Save</button>
             <button className="btn btn-secondary" onClick={e => Cancel()}>Cancel</button>
         </Form>
     )

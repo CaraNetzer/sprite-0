@@ -1,15 +1,16 @@
 import { React, useEffect, useState } from 'react';
 import { searchDbImages } from '../managers/ImageManager';
 import { SingleImage } from './imagePages/Image';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 
-export const Search = () => {
+export const Search = (props) => {
 
     const [searchResults, setSearchResults] = useState([]);
     const [query, setQuery] = useState("");
 
     const { id } = useParams();
+    let location = useLocation();
 
 
     const searchImages = (e) => {
@@ -26,10 +27,15 @@ export const Search = () => {
         }
     }, [])
 
+    useEffect(() => {
+        //on return to this page, results will still be there
+        window.history.replaceState(null, "Sprite[0]", `/search/${query.toString()}`);
+    },[query])
+
     return (
         <>
             <div className="search-container">
-                <form onSubmit={(e) => searchImages(e)}>
+                <form className='search-form' onSubmit={(e) => searchImages(e)}>
                     <input id="search-input" type="text" placeholder="Search by tags, notes, and titles" name="search"
                         onChange={event => setQuery(event.target.value)}/>
                         <button type="submit"><i className="fa fa-search"></i></button>
