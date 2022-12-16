@@ -18,7 +18,7 @@ Users can upload game art/spritesheets/tilesets, favorite other users' images, u
 2. Populate the database with the files in the SQL folder of this project
 3. Press the run button
 4. In your terminal from the client folder run `npm start`
-5. Login to the app with `spriter123@email.com` and any password
+5. Log in to the app with `spriter123@email.com` and any password
 
 ## Acknowledgments
 
