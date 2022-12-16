@@ -38,7 +38,7 @@ code {
 .board-tile {
   overflow: hidden;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, .2);
-  margin: 2%;
+  margin: 0 2% 4% 2%;
   width: 200px;
   height: 200px;
   flex: 0 0 200px;
@@ -62,7 +62,7 @@ code {
 }
 
 .tile.is-ancestor {
-  margin: 2%;
+  margin: 0 2% 2% 2%;
   display: flex;
   flex-flow: row wrap;
 }
@@ -237,7 +237,7 @@ html {
 
 #navbar {
   background-color: inherit;
-  padding: 7%;
+  padding: 5% 4%;
   border-radius: 0 0 85% 85% / 30%;
 }
 
@@ -247,9 +247,8 @@ html {
 }
 
 .page-header {
-  margin: 2% 0 0 10%;
-  font-family: "Press Start 2P";
-  
+  margin: 2% 0 2% 10%;
+  font-family: "Press Start 2P";  
 }
 
 .card {
@@ -288,6 +287,7 @@ html {
 #image-details-header {
   display: flex;
   padding-top: 3px;
+  font-family: "IBM Plex Mono";
 }
 
 #artist {
@@ -321,6 +321,7 @@ html {
 
   margin-top: 3% !important;
   margin-bottom: 3% !important;
+  font-family: "IBM Plex Mono";
 }
 
 #image-links {
@@ -379,15 +380,59 @@ html {
 
 .tag-list-item {
   width: 15%;
-  margin-top: 2%;
+  display: none;
+}
+.tag-list-item-text:hover {
+  padding-left: 14%;
+  font-family: "IBM Plex Mono";
+}
+
+#tag-text {
+  font-family: "IBM Plex Mono";
 }
 
 #tag-list-title {
   font-family: "Press Start 2P";
+  padding-left: 1%;
+}
+
+#tag-list-title:hover .tag-list-item {
+  display: block;
 }
 
 .invalid-field{
-  border-color: #dc3545;
-  color: #dc3545;
+  border-color: #dc3545 !important;
+  color: #dc3545 !important;
   background-color: #fff;
+}
+
+#as-button {
+  border-right: 3px solid black;
+}
+
+#not-hover-container {
+  width: auto !important;
+}
+
+.edit-button {
+  color: black !important;
+  border: 1px solid white !important;
+  background-color: #c5fcdd !important;
+}
+
+.edit-button:hover {
+  color: white !important;
+  border: 1 px solid gray !important;
+  background-color: #6a6afc !important;
+}
+.delete-button {
+  color: black !important;
+  border: 1px solid white !important;
+  background-color: #f5e0ff !important;
+}
+
+.delete-button:hover {
+  color: white !important;
+  border: 1 px solid gray !important;
+  background-color: #fa7253 !important;
 }

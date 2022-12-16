@@ -25,32 +25,35 @@ const ImageBoard = ({ imageList, setImages, images, changeColor }) => {
 	}, [])
 
 	return (
-		<div id="home-page">
-			<ListGroup className="tag-list-item">
-			<h4 id="tag-list-title">Tags<span style={{fontSize:36}}>🏷️</span></h4>
-				{tags?.map(t => 
-					<ListGroupItem 
-						action						
-						tag="button"
-						onClick={() => navigate(`/search/${t.name}`)}>
-						➡ {t.name}
-					</ListGroupItem>
-				)}
-			</ListGroup>
-			<div className="container">
-				<div className="row justify-content-center">
-					<div className="tile is-ancestor board">
-						{images.length > 0 ? images?.map((thisImage) => (
-							<>
-								<div className="tile is-parent board-tile">
-									<SingleImage changeColor={changeColor} key={thisImage.id} image={thisImage} setImages={setImages} />
-								</div>
-							</>
-						)) : <p>No images yet</p>}
+		<div>
+
+			<h4 id="tag-list-title">Tags<span style={{ fontSize: 36 }}>🏷️</span></h4>
+			<div id="home-page">
+				<ListGroup className="tag-list-item">
+					{tags?.map(t =>
+						<ListGroupItem className="tag-list-item-text"
+							action
+							tag="button"
+							onClick={() => navigate(`/search/${t.name}`)}>
+							<span id="arrow">➡</span> <span id="tag-text">{t.name}</span>
+						</ListGroupItem>
+					)}
+				</ListGroup>
+				<div className="container">
+					<div className="row justify-content-center">
+						<div className="tile is-ancestor board">
+							{images.length > 0 ? images?.map((thisImage) => (
+								<>
+									<div className="tile is-parent board-tile">
+										<SingleImage changeColor={changeColor} key={thisImage.id} image={thisImage} setImages={setImages} />
+									</div>
+								</>
+							)) : <p>No images yet</p>}
+						</div>
 					</div>
 				</div>
-			</div>
-		</div >
+			</div >
+		</div>
 	);
 };
 

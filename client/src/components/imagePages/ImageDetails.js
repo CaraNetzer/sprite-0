@@ -22,11 +22,34 @@ export const ImageDetails = () => {
     const [userFolders, setUserFolders] = useState("");
     const [foldersThisImageIsIn, setFoldersThisImageIsIn] = useState([]);
 
+    const colors = ["#87efff", "#78d3ff", "#7da1ff", "#d482fa"];
+
+
+
+	const changeButtonColor = () => {
+
+		const imageNodes = document.querySelectorAll(".details-button");
+
+		for (let i = 0; i < imageNodes.length; i++) {
+			var lastColorIndex = localStorage.getItem('lastImageColorIndex') || -1;
+			var randomColor = -1;
+			while (lastColorIndex == randomColor || randomColor === -1) {
+				randomColor = Math.floor(Math.random() * colors.length);
+				while (colors[randomColor] === document.body.style.backgroundColor) {
+					randomColor = Math.floor(Math.random() * colors.length);
+				}
+			};
+			
+			localStorage.setItem('lastImageColorIndex', randomColor);
+			imageNodes[i].style.backgroundColor = colors[randomColor];
+		}
+	}
 
     //#region favorites
     useEffect(() => {
         getFoldersByUser(userObject.id).then(setUserFolders);
-        getImageFolders(id).then(setFoldersThisImageIsIn)
+        getImageFolders(id).then(setFoldersThisImageIsIn);
+        changeButtonColor();
     }, [])
 
     useEffect(() => {
@@ -134,26 +157,27 @@ export const ImageDetails = () => {
                             </i>
                         }
                     </div>
-                    {image.artist?.length < 2
+                    {image.artist?.length < 1
                         ? ""
                         : <p id="artist"><strong>Artist:</strong> {image.artist}</p>
                     }
                     <p>Uploaded by: <a href={`/profile/${image.user.id}`}>{image.user.username}</a></p>
+                    <p>Dimensions: {image.width} x {image.height} px</p>
 
                     {image.tags?.map(t => <p className="ReactTags__tag"><a onClick={() => navigate(`/search/${t.name}`)}>#{t.name}</a></p>)}
                     {/* making sure a user only has access to the delete button if they were the one who created it */}
                     <p id="image-notes"><strong>Notes:</strong> {image.notes?.length > 2 ? <><br></br>{image.notes}</> : <span style={{color:"#8d91a3"}}>None</span>}</p>
                     {userObject.id == image.userId
                         ? <p>
-                            <button className="btn btn-primary edit" onClick={e => handleImageEdit(e)}>Edit</button>
-                            <button className="btn btn-danger" onClick={e => handleImageDelete(e)}>Delete</button>
+                            <button className="edit-button btn edit" onClick={e => handleImageEdit(e)}>Edit</button>
+                            <button className="delete-button btn" onClick={e => handleImageDelete(e)}>Delete</button>
                         </p>
                         : ""
                     }
                 </div>
                 <div id="image-card-right">
-                    <ButtonGroup id="image-links">
-                        <a className="btn btn-success" href={image.src}
+                    <ButtonGroup id="image-links" className="details-button">
+                        <a className="btn btn-success" id="as-button" href={image.src}
                             target="popup"
                             onClick={() => window.open(`${image.src}`, 'popup', 'width=600,height=600')}>
                             View image as actual size

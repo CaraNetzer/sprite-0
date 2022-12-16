@@ -87,6 +87,7 @@ export function UploadModal({ setImageList }) {
                     }));
                 })
                 .then(getAllImages().then(i => setImageList(i)))
+                .then(getAllTags().then(setAllTags))
                 .then(handleClose);
         }
 

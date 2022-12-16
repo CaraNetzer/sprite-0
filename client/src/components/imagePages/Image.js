@@ -127,7 +127,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 
 			<img onClick={() => { navigate(`/image/${image.id}`); changeColor(); }} className="image" src={image.src}></img>
 
-			<Container className="not-hover">
+			<Container id="not-hover-container" className="not-hover">
 				<Row className="icon-row">
 					<Col className="on-top">
 						{favorite
