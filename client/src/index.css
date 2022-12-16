@@ -385,3 +385,9 @@ html {
 #tag-list-title {
   font-family: "Press Start 2P";
 }
+
+.invalid-field{
+  border-color: #dc3545;
+  color: #dc3545;
+  background-color: #fff;
+}

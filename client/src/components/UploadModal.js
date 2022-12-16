@@ -14,7 +14,9 @@ export function UploadModal({ setImageList }) {
     const [cloudinaryUrl, setCloudinaryUrl] = useState("")
     const [thumbnailUrl, setThumbnailUrl] = useState("")
     const [tags, setAllTags] = useState([])
-    const [thisTags, setThisTags] = useState([])    
+    const [thisTags, setThisTags] = useState([])
+    const [errors, setErrors] = useState({})
+
 
     const [image, updateImage] = useState({
         Src: "",
@@ -37,43 +39,56 @@ export function UploadModal({ setImageList }) {
     const localUser = localStorage.getItem("userProfile")
     const userObject = JSON.parse(localUser)
 
+    const validate = () => {
+        let temp = {}
+        temp.title = image.Title == "" ? false : true;
+        temp.width = image.Width == "" ? false : true;
+        temp.height = image.Height == "" ? false : true;
+        setErrors(temp)
+        return Object.values(temp).every(x => x == true)
+    }
+
+    const applyErrorClass = field => ((field in errors && errors[field] == false) ? ' invalid-field' : '')
+
+
     const uploadImage = (e) => {
         e.preventDefault()
 
-        const dbImage = {
-            Src: cloudinaryUrl ?? "",
-            Price: image.Price ?? 0.00,
-            Width: image.Width,
-            Height: image.Height,
-            Notes: image.Notes,
-            Title: image.Title,
-            Sheet: image.Sheet,
-            Upvotes: 0,
-            Downvotes: 0,
-            Artist: image.Artist,
-            UserId: userObject.id
+        if (validate()) {
+            const dbImage = {
+                Src: cloudinaryUrl ?? "",
+                Price: image.Price ?? 0.00,
+                Width: image.Width,
+                Height: image.Height,
+                Notes: image.Notes,
+                Title: image.Title,
+                Sheet: image.Sheet,
+                Upvotes: 0,
+                Downvotes: 0,
+                Artist: image.Artist,
+                UserId: userObject.id
+            }
+
+            //change tag ids back to ints
+            const cleanedThisTags = thisTags.map(t => { return { id: parseInt(t.id), name: t.name } })
+            dbImage.Tags = cleanedThisTags
+
+            fetch('/api/Image', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dbImage)
+            }).then((res) => res.json())
+                .then(response => {
+                    cleanedThisTags.forEach(thisTag => addImageTag({
+                        tagId: tags.find(t => t.name == thisTag.name).id,
+                        imageId: response.id,
+                    }));
+                })
+                .then(getAllImages().then(i => setImageList(i)))
+                .then(handleClose);
         }
-
-        //change tag ids back to ints
-        const cleanedThisTags = thisTags.map(t => { return { id: parseInt(t.id), name: t.name } })
-        dbImage.Tags = cleanedThisTags
-
-
-        fetch('/api/Image', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dbImage)
-        }).then((res) => res.json())
-            .then(response => {
-                cleanedThisTags.forEach(thisTag => addImageTag({
-                    tagId: tags.find(t => t.name == thisTag.name).id,
-                    imageId: response.id,
-                }));
-            })
-            .then(getAllImages().then(i => setImageList(i)))
-
 
     }
 
@@ -97,6 +112,7 @@ export function UploadModal({ setImageList }) {
         setThumbnailUrl("");
         setShow(false)
         setThisTags([])
+        setErrors({})
     }
     const handleShow = () => setShow(true);
 
@@ -158,13 +174,14 @@ export function UploadModal({ setImageList }) {
                     {thumbnailUrl ? <Image id="img-preview" cloudName="dkndgz1ge" publicId={thumbnailUrl} /> : ""}
                     <UploadWidget setCloudinaryUrl={setCloudinaryUrl} setThumbnailUrl={setThumbnailUrl} />
                     <Form>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Group className={"mb-3" + applyErrorClass('title')}>
                             <Form.Label>Title</Form.Label>
                             <Form.Control
+                                className={applyErrorClass('title')}
                                 type="text"
                                 placeholder="Image Title"
                                 autoFocus
-                                required
+                                required={true}
                                 value={image.Title}
                                 onChange={(e) => {
                                     const copy = { ...image }
@@ -172,8 +189,11 @@ export function UploadModal({ setImageList }) {
                                     updateImage(copy)
                                 }}
                             />
+                            {/* <Form.Control.Feedback type="invalid">
+                                Required.
+                            </Form.Control.Feedback> */}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Group className="mb-3">
                             <Form.Label>Artist</Form.Label>
                             <Form.Control type="text" placeholder="Artist (if known)"
                                 value={image.Artist}
@@ -183,7 +203,7 @@ export function UploadModal({ setImageList }) {
                                     updateImage(copy)
                                 }} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Group className="mb-3">
                             <Form.Label>Price (optional):</Form.Label>
                             <Form.Control type="number" placeholder="optional"
                                 value={image.Price}
@@ -193,37 +213,44 @@ export function UploadModal({ setImageList }) {
                                     updateImage(copy)
                                 }} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Group className={"mb-3" + applyErrorClass('width')}>
                             <Form.Label>Width in px</Form.Label>
-                            <Form.Control type="number" required
+                            <Form.Control type="number" required={true}
+                                className={applyErrorClass('width')}
                                 value={image.Width}
                                 onChange={(e) => {
                                     const copy = { ...image }
                                     copy.Width = e.target.value
                                     updateImage(copy)
                                 }} />
+                            {/* <Form.Control.Feedback type="invalid">
+                                Required.
+                            </Form.Control.Feedback> */}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Group className={"mb-3" + applyErrorClass('height')}>
                             <Form.Label>Height (in px): </Form.Label>
-                            <Form.Control type="number" required
+                            <Form.Control type="number" required={true}
+                                className={applyErrorClass('height')}
                                 value={image.Height}
                                 onChange={(e) => {
                                     const copy = { ...image }
                                     copy.Height = e.target.value
                                     updateImage(copy)
                                 }} />
+                            {/* <Form.Control.Feedback type="invalid">
+                                Required.
+                            </Form.Control.Feedback> */}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                        <Form.Group className="mb-3">
                             <Form.Check type="checkbox" label="Sheet?"
                                 value={image.Sheet}
                                 onChange={(e) => {
                                     const copy = { ...image }
                                     copy.Sheet = e.target.checked
-                                    //debugger
                                     updateImage(copy)
                                 }} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Group className="mb-3">
                             <Form.Label>Notes</Form.Label>
                             <Form.Control as="textarea" rows={3}
                                 value={image.Notes}
@@ -233,7 +260,7 @@ export function UploadModal({ setImageList }) {
                                     updateImage(copy)
                                 }} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Group className="mb-3">
                             <Form.Label>Add Tags</Form.Label>
                             <ReactTags
                                 inline
@@ -258,8 +285,7 @@ export function UploadModal({ setImageList }) {
                         Close
                     </Button>
                     <Button onClick={(e) => {
-                        uploadImage(e)
-                        handleClose()
+                        uploadImage(e);
                     }} variant="primary">
                         Save Changes
                     </Button>
