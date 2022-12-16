@@ -15,10 +15,10 @@ Users can upload game art/spritesheets/tilesets, favorite other users' images, u
 ### Executing program
 
 1. Open the solution file in Visual Studio
-2. Populate the database with the files in the SQL folder of this project
-3. Press the run button
-4. In your terminal from the client folder run `npm start`
-5. Log in to the app with `spriter123@email.com` and any password
+3. Populate the database with the files in the [SQL folder](https://github.com/CaraNetzer/sprite-0/tree/main/SQL) of this project. In particular, publish the .dacpac file to create a pre-loaded database.
+4. Press the run button
+5. In your terminal from the client folder run `npm start`
+6. Log in to the app with `spriter123@email.com` and any password
 
 ## Acknowledgments
 
