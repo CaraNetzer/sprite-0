@@ -1,36 +1,27 @@
 # Sprite[0]
 
-Sprite[0] is an sprite database that is home to game art the users upload and can access for their own game development.
+Sprite[0] is an sprite database that is home to game art that users upload and can access for their own game development.
 
 ## Description
 
-Users can upload game art/spritesheets/tilesets, favorite other users' images, upvote and downvote images, and search the database. 
+Users can upload game art/spritesheets/tilesets, favorite other users' images, upvote and downvote images, download images, and search by tag, title, and notes.
 
 ## Getting Started
 
 ### Dependencies
 
-* `npm install`
-
-### Installing
-
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* In your terminal from the client folder for this project run `npm install`
 
 ### Executing program
 
-* `npm start`
-
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+* Open the solution file in Visual Studio
+* Populate the database with the files in the SQL folder of this project
+* Press the run button
+* In your terminal from the client folder run `npm start`
+* Login to the app with `spriter123@email.com` and any password
 
 ## Acknowledgments
 
 Inspiration, code snippets, etc.
 * [React and asp.net c# image upload](https://github.com/CodAffection/React-Asp.Net-Core-API---Image-Upload-Retrieve-Update-and-Delete-/tree/master/employee-register-client/src/components)
-* [Spriters-Resource.com/](https://www.spriters-resource.com/)
+* [Spriters-Resource.com](https://www.spriters-resource.com/)
