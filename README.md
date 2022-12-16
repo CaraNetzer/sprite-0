@@ -1,62 +1,27 @@
-# Project Title
+# Sprite[0]
 
-Simple overview of use/purpose.
+Sprite[0] is an sprite database that is home to game art that users upload and can access for their own game development.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+Users can upload game art/spritesheets/tilesets, favorite other users' images, upvote and downvote images, download images, and search by tag, title, and notes.
 
 ## Getting Started
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
-
-### Installing
-
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* In your terminal from the client folder for this project run `npm install`
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
-
-## Authors
-
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+1. Open the solution file in Visual Studio
+2. Populate the database with the files in the SQL folder of this project
+3. Press the run button
+4. In your terminal from the client folder run `npm start`
+5. Log in to the app with `spriter123@email.com` and any password
 
 ## Acknowledgments
 
 Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+* [React and asp.net c# image upload](https://github.com/CodAffection/React-Asp.Net-Core-API---Image-Upload-Retrieve-Update-and-Delete-/tree/master/employee-register-client/src/components)
+* [Spriters-Resource.com](https://www.spriters-resource.com/)
