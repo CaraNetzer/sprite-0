@@ -16,6 +16,7 @@ code {
 .auth {
   margin: auto;
   width: 50%;
+  margin-top: 8%;
 }
 
 .image {
@@ -212,6 +213,7 @@ code {
 .arrow-text {
   font-size: 35px;
   padding: 0 7px;
+  font-family: 'IBM Plex Mono';
 }
 
 .selected-arrow-up {
@@ -435,4 +437,9 @@ html {
   color: white !important;
   border: 1 px solid gray !important;
   background-color: #fa7253 !important;
+}
+
+.details-tags:hover {
+  color: #6a6afc;
+  cursor: pointer;
 }

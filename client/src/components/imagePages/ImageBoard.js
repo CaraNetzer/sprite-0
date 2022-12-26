@@ -45,7 +45,7 @@ const ImageBoard = ({ imageList, setImages, images, changeColor }) => {
 							{images.length > 0 ? images?.map((thisImage) => (
 								<>
 									<div className="tile is-parent board-tile">
-										<SingleImage changeColor={changeColor} key={thisImage.id} image={thisImage} setImages={setImages} />
+										<SingleImage images={images} changeColor={changeColor} key={thisImage.id} image={thisImage} setImages={setImages} />
 									</div>
 								</>
 							)) : <p>No images yet</p>}

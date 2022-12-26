@@ -9,7 +9,7 @@ import { searchDbImages } from "../../managers/ImageManager";
 
 
 
-export const SingleImage = ({ image, setFavorites, setImages, query, setSearchResults, changeColor }) => {
+export const SingleImage = ({ images, image, setFavorites, setImages, query, setSearchResults, changeColor }) => {
 
 	const navigate = useNavigate();
 
@@ -22,6 +22,8 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 
 	const [upvoted, setUpvoted] = useState(false);
 	const [downvoted, setDownvoted] = useState(false);
+
+	const [rerender, setRerender] = useState(false);
 
 
 	const colors = ["#bbf6ff", "#b6e7ff", "#b6caff", "#e8b6ff"];
@@ -96,7 +98,7 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 				const favoritesFolderId = userFolders.find(f => f.name == "Favorites").id
 				getFolderImages(favoritesFolderId).then(setFavorites);
 			}).then(() => getAllImages()).then(i => setImages(i));
-		//the heart in the top list is not updating bc these .thens are out fo order
+		//the heart in the top list is not updating bc these .thens are out of order
 	}
 
 	const upvote = (e) => {
@@ -104,9 +106,9 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		const updatedImage = { ...image }
 		updatedImage.upvotes = updatedImage.upvotes + 1
 		updatedImage.User = null;
+		image = updatedImage;
 		editImage(updatedImage)
-			.then(getAllImages().then(setImages))
-			.then(console.log(image));
+			.then(getAllImages().then(i => setImages(i))).then(() => setRerender(!rerender));
 		//.then(searchDbImages(query).then(setSearchResults))
 	}
 
@@ -115,8 +117,9 @@ export const SingleImage = ({ image, setFavorites, setImages, query, setSearchRe
 		const updatedImage = { ...image }
 		updatedImage.upvotes = updatedImage.upvotes - 1
 		updatedImage.User = null;
+		image = updatedImage;
 		editImage(updatedImage)
-			.then(getAllImages().then(setImages))
+			.then(getAllImages().then(i => setImages(i))).then(() => setRerender(!rerender));
 		//.then(searchDbImages(query).then(setSearchResults))
 	}
 

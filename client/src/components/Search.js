@@ -23,7 +23,8 @@ export const Search = (props) => {
     useEffect(() => {
         if (id != undefined) {
             searchDbImages(id)
-            .then(setSearchResults);
+            .then(setSearchResults)
+            .then(setQuery(id));
         }
     }, [])
 

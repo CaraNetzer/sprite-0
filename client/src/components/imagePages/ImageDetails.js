@@ -164,7 +164,7 @@ export const ImageDetails = () => {
                     <p>Uploaded by: <a href={`/profile/${image.user.id}`}>{image.user.username}</a></p>
                     <p>Dimensions: {image.width} x {image.height} px</p>
 
-                    {image.tags?.map(t => <p className="ReactTags__tag"><a onClick={() => navigate(`/search/${t.name}`)}>#{t.name}</a></p>)}
+                    {image.tags?.map(t => <p className="ReactTags__tag details-tags"><a onClick={() => navigate(`/search/${t.name}`)}>#{t.name}</a></p>)}
                     {/* making sure a user only has access to the delete button if they were the one who created it */}
                     <p id="image-notes"><strong>Notes:</strong> {image.notes?.length > 2 ? <><br></br>{image.notes}</> : <span style={{color:"#8d91a3"}}>None</span>}</p>
                     {userObject.id == image.userId
