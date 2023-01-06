@@ -8,9 +8,7 @@ Users can upload game art/spritesheets/tilesets, favorite other users' images, u
 
 ## Demo
 
-
-https://user-images.githubusercontent.com/106983495/211049997-be00d710-c579-4f18-b540-ebb65b85645d.mp4
-
+https://youtu.be/fN48v7ZmaWk
 
 
 ## Getting Started
