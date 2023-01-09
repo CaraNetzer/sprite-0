@@ -6,6 +6,11 @@ Sprite[0] is an sprite database that is home to game art that users upload and c
 
 Users can upload game art/spritesheets/tilesets, favorite other users' images, upvote and downvote images, download images, and search by tag, title, and notes.
 
+## Demo
+
+https://youtu.be/fN48v7ZmaWk
+
+
 ## Getting Started
 
 ### Dependencies
