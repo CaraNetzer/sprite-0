@@ -215,7 +215,7 @@ export function UploadModal({ setImageList }) {
                                 }} />
                         </Form.Group>
                         <Form.Group className={"mb-3" + applyErrorClass('width')}>
-                            <Form.Label>Width in px</Form.Label>
+                            <Form.Label>Width (in px): </Form.Label>
                             <Form.Control type="number" required={true}
                                 className={applyErrorClass('width')}
                                 value={image.Width}
